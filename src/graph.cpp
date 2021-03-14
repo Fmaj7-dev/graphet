@@ -29,6 +29,14 @@ struct Context
 
 } g_context;
 
+struct Vertex { float x, y, z; unsigned char r, g, b, a; };
+Vertex vtcs[] {
+   {  0.f,  .5f, 0.f,   255, 255, 255, 255 },
+   { -.5f, -.5f, 0.f,   255, 255, 255, 255 },
+   {  .5f, -.5f, 0.f,   255, 255, 255, 255 },
+   {  .0f, .0f, 0.f,   255, 255, 255, 255 }
+};
+
 void init()
 {
    printf("init()\n");
@@ -114,17 +122,13 @@ void init()
    glUseProgram(g_context.prog_id);
    printf("- shader program linked & bound\n");
 
-   struct Vertex { float x, y, z; unsigned char r, g, b, a; };
-   const Vertex vtcs[] {
-    {  0.f,  .5f, 0.f,   255, 255, 255, 255 },
-    { -.5f, -.5f, 0.f,   255, 255, 255, 255 },
-    {  .5f, -.5f, 0.f,   255, 255, 255, 255 },
-    {  .0f, .0f, 0.f,   255, 255, 255, 255 }
-   };
+   glPointSize(3.0f);
+   
    glGenBuffers(1, &g_context.geom_id);
    assert(g_context.geom_id);
    glBindBuffer(GL_ARRAY_BUFFER, g_context.geom_id);
-   glBufferData(GL_ARRAY_BUFFER, sizeof(vtcs), vtcs, GL_STATIC_DRAW);
+   //glBufferData(GL_ARRAY_BUFFER, sizeof(vtcs), vtcs, GL_STATIC_DRAW);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(vtcs), vtcs, GL_DYNAMIC_DRAW);
    auto offset = [](size_t value) -> const GLvoid * { return reinterpret_cast<const GLvoid *>(value); };
    glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), offset(0));
    glEnableVertexAttribArray(Context::Position_loc);
@@ -148,6 +152,10 @@ void draw()
 
    //glUniform1f(g_context.u_time_loc, glutGet(GLUT_ELAPSED_TIME) / 1000.f);
    //glDrawArrays(GL_TRIANGLES, 0, 3);
+
+   glBindBuffer( GL_ARRAY_BUFFER , g_context.geom_id );
+	glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(vtcs) , vtcs );
+
    glDrawArrays(GL_POINTS, 0, 4);
     
    glutSwapBuffers();
@@ -155,8 +163,7 @@ void draw()
 
 void update()
 {
-   //printf(".");
-   //fflush(stdout);
+   vtcs[0].x += 0.0001f;
    glutPostRedisplay();   
 }
 
