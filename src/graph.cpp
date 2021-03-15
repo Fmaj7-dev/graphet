@@ -41,7 +41,7 @@ void init()
 {
    printf("init()\n");
 
-   glClearColor(.3f, .3f, .3f, 1.f);
+   glClearColor(.1f, .1f, .1f, 1.f);
 
    auto load_shader = [](GLenum type, const char *src) -> GLuint
    {
@@ -88,6 +88,7 @@ void init()
     "     0,   0,  0,  1                     \n"
     "    );                                  \n"
     "    gl_Position = a_position * rot;     \n"
+    "    gl_PointSize = 3.0;                   \n"
     "    v_color = a_color;                  \n"
     "}                                       \n"
    );
@@ -122,7 +123,12 @@ void init()
    glUseProgram(g_context.prog_id);
    printf("- shader program linked & bound\n");
 
+   
+#ifdef __APPLE__
    glPointSize(3.0f);
+#else
+   glEnable(GL_PROGRAM_POINT_SIZE);
+#endif
    
    glGenBuffers(1, &g_context.geom_id);
    assert(g_context.geom_id);
@@ -163,7 +169,7 @@ void draw()
 
 void update()
 {
-   vtcs[0].x += 0.0001f;
+   vtcs[0].x += 0.001f;
    glutPostRedisplay();   
 }
 
