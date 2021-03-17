@@ -1,8 +1,11 @@
 #define GL_GLEXT_PROTOTYPES
 
+#include "particlesystem.h"
+
 #include <cstdio>
 #include <cassert>
 #include <vector>
+#include <iostream>
 
 #ifdef __APPLE__
    #define GL_SILENCE_DEPRECATION
@@ -29,17 +32,21 @@ struct Context
 
 } g_context;
 
-struct Vertex { float x, y, z; unsigned char r, g, b, a; };
+/*struct Vertex { float x, y, z; unsigned char r, g, b, a; };
 Vertex vtcs[] {
    {  0.f,  .5f, 0.f,   255, 255, 255, 255 },
    { -.5f, -.5f, 0.f,   255, 255, 255, 255 },
    {  .5f, -.5f, 0.f,   255, 255, 255, 255 },
-   {  .0f, .0f, 0.f,   255, 255, 255, 255 }
-};
+   {  .0f, .0f, 0.f,   255, 255, 255, 255 },
+   {  .0f, .1f, 1.f,   255, 255, 255, 255 }
+};*/
+
+ParticleSystem ps(20000);
 
 void init()
 {
    printf("init()\n");
+   ps.randInit();
 
    glClearColor(.1f, .1f, .1f, 1.f);
 
@@ -125,7 +132,7 @@ void init()
 
    
 #ifdef __APPLE__
-   glPointSize(3.0f);
+   //glPointSize(3.0f);
 #else
    glEnable(GL_PROGRAM_POINT_SIZE);
 #endif
@@ -133,12 +140,14 @@ void init()
    glGenBuffers(1, &g_context.geom_id);
    assert(g_context.geom_id);
    glBindBuffer(GL_ARRAY_BUFFER, g_context.geom_id);
-   //glBufferData(GL_ARRAY_BUFFER, sizeof(vtcs), vtcs, GL_STATIC_DRAW);
-   glBufferData(GL_ARRAY_BUFFER, sizeof(vtcs), vtcs, GL_DYNAMIC_DRAW);
+   //glBufferData(GL_ARRAY_BUFFER, sizeof(vtcs), vtcs, GL_DYNAMIC_DRAW);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(Particle)*ps.num_particles_, ps.particles_, GL_DYNAMIC_DRAW);
    auto offset = [](size_t value) -> const GLvoid * { return reinterpret_cast<const GLvoid *>(value); };
-   glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), offset(0));
+   //glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), offset(0));
+   glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), offset(0));
    glEnableVertexAttribArray(Context::Position_loc);
-   glVertexAttribPointer(Context::Color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), offset(3 * sizeof(float)));
+   //glVertexAttribPointer(Context::Color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), offset(3 * sizeof(float)));
+   glVertexAttribPointer(Context::Color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Particle), offset(3 * sizeof(float)));
    glEnableVertexAttribArray(Context::Color_loc);
    printf("- geometry created & bound\n");
 }
@@ -160,28 +169,35 @@ void draw()
    //glDrawArrays(GL_TRIANGLES, 0, 3);
 
    glBindBuffer( GL_ARRAY_BUFFER , g_context.geom_id );
-	glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(vtcs) , vtcs );
+	//glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(vtcs) , vtcs );
+   glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(Particle)*ps.num_particles_ , ps.particles_ );
 
-   glDrawArrays(GL_POINTS, 0, 4);
+   glDrawArrays(GL_POINTS, 0, ps.num_particles_);
     
    glutSwapBuffers();
 }
 
 void update()
 {
-   vtcs[0].x += 0.001f;
+   //vtcs[0].x += 0.001f;
+   ps.particles_[0].position_[0] += 0.001f;
    glutPostRedisplay();   
 }
 
 int main(int argc, char *argv[])
 {
+   std::cout<<"Size of Particle: "<<sizeof(Particle)<<std::endl;
+   /*std::cout<<"Size of Vertex: "<<sizeof(Vertex)<<std::endl;
+
+   std::cout<<"Size of vtcs: "<<sizeof(vtcs)<<std::endl;*/
+   std::cout<<"Size of Particles array: "<<sizeof(Particle)*ps.num_particles_<<std::endl;
    printf("main()\n");
 
    glutInit(&argc, argv);
    glutInitWindowSize(g_context.width, g_context.height);
    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 
-   glutCreateWindow("Hello Triangle! | 4FipS.com");
+   glutCreateWindow("graphs");
 
    glutReshapeFunc(resize);
    glutDisplayFunc(draw);
