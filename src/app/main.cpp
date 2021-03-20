@@ -41,7 +41,7 @@ Vertex vtcs[] {
    {  .0f, .1f, 1.f,   255, 255, 255, 255 }
 };*/
 
-ParticleSystem ps(20000);
+ParticleSystem ps(2000);
 
 void init()
 {
@@ -132,7 +132,7 @@ void init()
 
    
 #ifdef __APPLE__
-   //glPointSize(3.0f);
+   glPointSize(3.0f);
 #else
    glEnable(GL_PROGRAM_POINT_SIZE);
 #endif
@@ -141,7 +141,7 @@ void init()
    assert(g_context.geom_id);
    glBindBuffer(GL_ARRAY_BUFFER, g_context.geom_id);
    //glBufferData(GL_ARRAY_BUFFER, sizeof(vtcs), vtcs, GL_DYNAMIC_DRAW);
-   glBufferData(GL_ARRAY_BUFFER, sizeof(Particle)*ps.num_particles_, ps.particles_, GL_DYNAMIC_DRAW);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(Particle)*ps.getNumParticles(), ps.getParticles(), GL_DYNAMIC_DRAW);
    auto offset = [](size_t value) -> const GLvoid * { return reinterpret_cast<const GLvoid *>(value); };
    //glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), offset(0));
    glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), offset(0));
@@ -156,8 +156,8 @@ void resize(int width, int height)
 {
    printf("resize(%d, %d)\n", width, height);
    
-   g_context.width = width;
-   g_context.height = height;
+   //g_context.width = width;
+   //g_context.height = height;
 }
 
 void draw()
@@ -170,9 +170,9 @@ void draw()
 
    glBindBuffer( GL_ARRAY_BUFFER , g_context.geom_id );
 	//glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(vtcs) , vtcs );
-   glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(Particle)*ps.num_particles_ , ps.particles_ );
+   glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(Particle)*ps.getNumParticles() , ps.getParticles() );
 
-   glDrawArrays(GL_POINTS, 0, ps.num_particles_);
+   glDrawArrays(GL_POINTS, 0, ps.getNumParticles());
     
    glutSwapBuffers();
 }
@@ -180,19 +180,20 @@ void draw()
 void update()
 {
    //vtcs[0].x += 0.001f;
-   ps.particles_[0].position_[0] += 0.001f;
+   ps.getParticles()[0].position_[0] += 0.001f;
+   ps.getParticles()[1].position_[0] += 0.01f;
+   ps.getParticles()[2].position_[0] += 0.0001f;
+   ps.getParticles()[3].position_[0] += 0.01f;
+   ps.getParticles()[4].position_[0] += 0.001f;
+   ps.getParticles()[5].position_[0] += 0.0001f;
+   ps.getParticles()[6].position_[0] += 0.003f;
+   ps.getParticles()[7].position_[0] += 0.0003f;
+
    glutPostRedisplay();   
 }
 
 int main(int argc, char *argv[])
 {
-   std::cout<<"Size of Particle: "<<sizeof(Particle)<<std::endl;
-   /*std::cout<<"Size of Vertex: "<<sizeof(Vertex)<<std::endl;
-
-   std::cout<<"Size of vtcs: "<<sizeof(vtcs)<<std::endl;*/
-   std::cout<<"Size of Particles array: "<<sizeof(Particle)*ps.num_particles_<<std::endl;
-   printf("main()\n");
-
    glutInit(&argc, argv);
    glutInitWindowSize(g_context.width, g_context.height);
    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);

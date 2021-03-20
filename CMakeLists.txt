@@ -7,9 +7,9 @@ project( graphet )
 # tell cmake to include the current dir
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-SET(CMAKE_CXX_COMPILER emcc)
-set(CMAKE_CXX_LINK_EXECUTABLE emcc)
-SET(CMAKE_LINKER emcc)
+#SET(CMAKE_CXX_COMPILER emcc)
+#set(CMAKE_CXX_LINK_EXECUTABLE emcc)
+#SET(CMAKE_LINKER emcc)
 
 
 # output dirs
@@ -24,6 +24,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/graph)
 # tell cmake to search for more CMakeLists.txt files in these folders
 add_subdirectory(src/render)
 add_subdirectory(src/graph)
+add_subdirectory(test)
 
 # main executable
 add_executable(graphet src/app/main.cpp)

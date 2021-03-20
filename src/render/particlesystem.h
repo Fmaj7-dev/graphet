@@ -2,7 +2,8 @@
 #ifndef PARTICLE_SYSTEM_H
 #define PARTICLE_SYSTEM_H
 
-#include <stddef.h>
+//#include <stddef.h>
+#include <vector>
 
 class Particle
 {
@@ -30,9 +31,13 @@ public:
     ~ParticleSystem();
     void randInit();
 
-    Particle* particles_;
+    void addParticle(const Particle&);
 
-    size_t num_particles_;
+    Particle* getParticles();
+    size_t getNumParticles();
+
+private:
+    std::vector<Particle> particles_;
 };
 
 #endif

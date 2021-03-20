@@ -9,3 +9,4 @@ graph.cpp
 # we are making a library
 add_library(graph ${LIBGRAPH_SOURCES})
 
+target_compile_options(graph PRIVATE -Wall -Wextra -pedantic -Werror -std=c++17 -Wc++11-extensions)

@@ -9,3 +9,4 @@ particlesystem.cpp
 # we are making a library
 add_library(render ${LIBRENDER_SOURCES})
 
+target_compile_options(render PRIVATE -Wall -Wextra -pedantic -Werror -std=c++17 -Wc++11-extensions )
