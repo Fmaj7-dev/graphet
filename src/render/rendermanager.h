@@ -1,16 +1,43 @@
 #ifndef RENDER_MANAGER_H
 #define RENDER_MANAGER_H
 
+#include "particlesystem.h"
+
+#ifdef __APPLE__
+   #define GL_SILENCE_DEPRECATION
+   #include <GLUT/glut.h>
+#else
+    #define GL_GLEXT_PROTOTYPES
+    #include <GL/glut.h>
+#endif
+
 class RenderManager
 {
 public:
-    RenderManager() = default;
+    RenderManager(GLuint w, GLuint h);
 
     void render();
 
-private:
-    
+    void draw();
+    void update();
 
+    void init();
+
+private:
+    GLint LoadShader(GLenum type, const char *src);
+
+private:
+    enum Context{ Position_loc, Color_loc };
+
+    ParticleSystem ps;
+    
+    GLuint width_;
+    GLuint height_;
+    
+    GLuint vertex_id;
+    GLuint fragment_id;
+    GLuint program_id;
+    GLuint geom_id;
 };
 
 #endif

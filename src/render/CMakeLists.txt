@@ -4,6 +4,7 @@
 # source files
 set (LIBRENDER_SOURCES
 particlesystem.cpp
+rendermanager.cpp
 )
 
 # we are making a library

@@ -20,24 +20,26 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build/bin)
 # include directories
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/render)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/graph)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/ui)
 
 # tell cmake to search for more CMakeLists.txt files in these folders
 add_subdirectory(src/render)
 add_subdirectory(src/graph)
+add_subdirectory(src/ui)
 add_subdirectory(test)
 
 # main executable
 add_executable(graphet src/app/main.cpp)
 
 # tell cmake to include these libraries in the linking
-target_link_libraries(graphet graph render "-framework GLUT -framework OpenGl")
+target_link_libraries(graphet graph render ui "-framework GLUT -framework OpenGl")
 
 #link_directories(/usr/local/mysql/lib)
 
 if(MSVC)
   target_compile_options(graphet PRIVATE /W4 /WX)
 else()
-  target_compile_options(graphet PRIVATE -Wall -Wextra -pedantic -Werror -std=c++17 -Wc++11-extensions)
+  target_compile_options(graphet PRIVATE -Wall -Wextra -pedantic -Werror -std=c++17 -Wc++11-extensions -g3 -O0)
 endif()
 
 install(TARGETS graphet DESTINATION bin)
