@@ -15,42 +15,34 @@ RenderManager::RenderManager(GLuint w, GLuint h)
     program_id(0),
     geom_id(0)
 {
-    //init();
+    
+}
+
+void RenderManager::printInfo()
+{
+    const GLubyte *renderer = glGetString( GL_RENDERER ); 
+    const GLubyte *vendor = glGetString( GL_VENDOR ); 
+    const GLubyte *version = glGetString( GL_VERSION ); 
+    const GLubyte *glslVersion = glGetString( GL_SHADING_LANGUAGE_VERSION ); 
+
+    /*GLint major, minor; 
+    glGetIntegerv(GL_MAJOR_VERSION, &major); 
+    glGetIntegerv(GL_MINOR_VERSION, &minor); */
+
+    printf("GL Vendor            : %s\n", vendor); 
+    printf("GL Renderer          : %s\n", renderer); 
+    printf("GL Version (string)  : %s\n", version); 
+    //printf("GL Version (integer) : %d.%d\n", major, minor); 
+    printf("GLSL Version         : %s\n", glslVersion);
 }
 
 void RenderManager::init()
 {
+    printInfo();
+    
    ps.randInit();
 
    glClearColor(.1f, .1f, .1f, 1.f);
-
-   /*auto load_shader = [](GLenum type, const char *src) -> GLuint
-   {
-      const GLuint id = glCreateShader(type);
-      assert(id);
-      glShaderSource(id, 1, &src, nullptr);
-      glCompileShader(id);
-      GLint compiled = 0;
-      glGetShaderiv(id, GL_COMPILE_STATUS, &compiled);
-      //assert(compiled);
-      printf("compiled: %d\n", compiled);
-      if(compiled == GL_FALSE)
-      {
-         GLint maxLength = 0;
-         glGetShaderiv(id, GL_INFO_LOG_LENGTH, &maxLength);
-
-         // The maxLength includes the NULL character
-         std::vector<GLchar> errorLog(maxLength);
-         glGetShaderInfoLog(id, maxLength, &maxLength, &errorLog[0]);
-         printf("%s", &errorLog[0]);
-
-         // Provide the infolog in whatever manor you deem best.
-         // Exit with failure.
-         glDeleteShader(id); // Don't leak the shader.
-         return 0;
-      }
-      return id;
-   };*/
 
    vertex_id = LoadShader(
     GL_VERTEX_SHADER,
@@ -69,7 +61,9 @@ void RenderManager::init()
     "     0,   0,  0,  1                     \n"
     "    );                                  \n"
     "    gl_Position = a_position * rot;     \n"
-    "    gl_PointSize = 3.0;                   \n"
+    "#ifdef GL_ES                            \n"
+    "    gl_PointSize = 3.0;                 \n"
+    "#endif                                  \n"
     "    v_color = a_color;                  \n"
     "}                                       \n"
    );
@@ -77,10 +71,9 @@ void RenderManager::init()
 
    fragment_id = LoadShader(
     GL_FRAGMENT_SHADER,
-    #ifdef __APPLE__
-    #else
+    "#ifdef GL_ES                            \n"
     "precision mediump float;                \n"
-    #endif
+    "#endif                                  \n"
     "varying vec4 v_color;                   \n"
     "void main()                             \n"
     "{                                       \n"

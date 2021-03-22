@@ -1,3 +1,5 @@
+#ifndef WINDOW_MANAGER_H
+#define WINDOW_MANAGER_H
 
 #include "rendermanager.h"
 
@@ -23,3 +25,5 @@ private:
     int width_;
     int height_;
 };
+
+#endif

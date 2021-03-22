@@ -19,15 +19,18 @@ public:
     void render();
 
     void draw();
+
     void update();
 
     void init();
+
+    void printInfo();
 
 private:
     GLint LoadShader(GLenum type, const char *src);
 
 private:
-    enum Context{ Position_loc, Color_loc };
+    class Context{ public: enum type{ Position_loc, Color_loc }; };
 
     ParticleSystem ps;
     
