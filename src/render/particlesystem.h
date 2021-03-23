@@ -34,14 +34,22 @@ public:
 class ParticleSystem
 {
 public:
-    ParticleSystem(size_t n);
+    ParticleSystem(size_t n = 0);
     ~ParticleSystem();
-    void randInit();
+    void randInitPositions();
 
+    // particles
     void addParticle(const Particle&);
-
     Particle* getParticles();
     size_t getNumParticles();
+
+    // render
+    void init();
+    GLint LoadShader(GLenum type, const char *src);
+    void draw();
+
+private:
+    class Context{ public: enum type{ Position_loc, Color_loc }; };
 
     GLuint vertex_id;
     GLuint fragment_id;

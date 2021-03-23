@@ -7,7 +7,7 @@
 #endif 
 
 RenderManager::RenderManager(GLuint w, GLuint h)
-  : ps( ParticleSystem(20) ),
+  : ps( ParticleSystem(200) ),
     width_(w),
     height_(h),
     vertex_id(0),
@@ -40,129 +40,21 @@ void RenderManager::init()
 {
     printInfo();
 
-   ps.randInit();
+    glClearColor(.4f, .1f, .1f, 1.f);
 
-   glClearColor(.4f, .1f, .1f, 1.f);
-
-   vertex_id = LoadShader(
-    GL_VERTEX_SHADER,
-    "attribute vec4 a_position;              \n"
-    "attribute vec4 a_color;                 \n"
-    "uniform float u_time;                   \n"
-    "varying vec4 v_color;                   \n"
-    "void main()                             \n"
-    "{                                       \n"
-    "    float sz = sin(u_time);             \n"
-    "    float cz = cos(u_time);             \n"
-    "    mat4 rot = mat4(                    \n"
-    "     cz, -sz, 0,  0,                    \n"
-    "     sz,  cz, 0,  0,                    \n"
-    "     0,   0,  1,  0,                    \n"
-    "     0,   0,  0,  1                     \n"
-    "    );                                  \n"
-    "    gl_Position = a_position * rot;     \n"
-    "#ifdef GL_ES                            \n"
-    "    gl_PointSize = 8.0;                 \n"
-    "#endif                                  \n"
-    "    v_color = a_color;                  \n"
-    "}                                       \n"
-   );
-   printf("- vertex shader loaded\n");
-
-   fragment_id = LoadShader(
-    GL_FRAGMENT_SHADER,
-    #ifdef __APPLE__
-    "#version 120\n"
-    #endif
-    "#ifdef GL_ES                            \n"
-    "   precision mediump float;             \n"
-    "#endif                                  \n"
-    "varying vec4 v_color;                   \n"
-    "void main()                             \n"
-    "{                                       \n"
-    "   vec2 temp = gl_PointCoord - vec2(0.5);\n"
-    "   float f = dot(temp, temp);\n"
-    "   if (f>0.25) discard;\n"
-    "   gl_FragColor = v_color;             \n"
-    "}                                       \n"
-   );
-   printf("- fragment shader loaded\n");
-
-   program_id = glCreateProgram();
-   assert(program_id);
-   glAttachShader(program_id, vertex_id);
-   glAttachShader(program_id, fragment_id);
-   glBindAttribLocation(program_id, Context::Position_loc, "a_position");
-   glBindAttribLocation(program_id, Context::Color_loc, "a_color");
-   glLinkProgram(program_id);
-   GLint linked = 0;
-   glGetProgramiv(program_id, GL_LINK_STATUS, &linked);
-   assert(linked);
-   //g_context.u_time_loc = glGetUniformLocation(program_id, "u_time");
-   //assert(g_context.u_time_loc >= 0);
-   glUseProgram(program_id);
-   printf("- shader program linked & bound\n");
-
-   
-#ifdef __APPLE__
-   glPointSize(8.0f);
-#else
-   glEnable(GL_PROGRAM_POINT_SIZE);
-#endif
-   
-   glGenBuffers(1, &geom_id);
-   assert(geom_id);
-   glBindBuffer(GL_ARRAY_BUFFER, geom_id);
-   glBufferData(GL_ARRAY_BUFFER, sizeof(Particle)*ps.getNumParticles(), ps.getParticles(), GL_DYNAMIC_DRAW);
-   auto offset = [](size_t value) -> const GLvoid * { return reinterpret_cast<const GLvoid *>(value); };
-   glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), offset(0));
-   glEnableVertexAttribArray(Context::Position_loc);
-   glVertexAttribPointer(Context::Color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Particle), offset(3 * sizeof(float)));
-   glEnableVertexAttribArray(Context::Color_loc);
-   printf("- geometry created & bound\n");
+    ps.init();
 }
-
-GLint RenderManager::LoadShader(GLenum type, const char *src)
-{
-    const GLuint id = glCreateShader(type);
-    assert(id);
-    glShaderSource(id, 1, &src, nullptr);
-    glCompileShader(id);
-    GLint compiled = 0;
-    glGetShaderiv(id, GL_COMPILE_STATUS, &compiled);
-    //assert(compiled);
-    printf("compiled: %d\n", compiled);
-    if(compiled == GL_FALSE)
-    {
-        GLint maxLength = 0;
-        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &maxLength);
-
-        // The maxLength includes the NULL character
-        std::vector<GLchar> errorLog(maxLength);
-        glGetShaderInfoLog(id, maxLength, &maxLength, &errorLog[0]);
-        printf("%s", &errorLog[0]);
-
-        // Provide the infolog in whatever manor you deem best.
-        // Exit with failure.
-        glDeleteShader(id);
-        return 0;
-    }
-    return id;
-};
 
 void RenderManager::draw()
 {
     glViewport(0, 0, width_, height_);
     glClear(GL_COLOR_BUFFER_BIT);
-
+    glDisable(GL_CULL_FACE);
+    
     //glUniform1f(g_context.u_time_loc, glutGet(GLUT_ELAPSED_TIME) / 1000.f);
     //glDrawArrays(GL_TRIANGLES, 0, 3);
 
-    glBindBuffer( GL_ARRAY_BUFFER , geom_id );
-    //glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(vtcs) , vtcs );
-    glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(Particle)*ps.getNumParticles() , ps.getParticles() );
-
-    glDrawArrays(GL_POINTS, 0, ps.getNumParticles());
+    ps.draw();
 }
 
 void RenderManager::update()

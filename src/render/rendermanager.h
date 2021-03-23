@@ -30,7 +30,7 @@ private:
     GLint LoadShader(GLenum type, const char *src);
 
 private:
-    class Context{ public: enum type{ Position_loc, Color_loc }; };
+    
 
     ParticleSystem ps;
     
