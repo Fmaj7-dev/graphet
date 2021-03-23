@@ -7,7 +7,7 @@
 #endif 
 
 RenderManager::RenderManager(GLuint w, GLuint h)
-  : ps( ParticleSystem(2000) ),
+  : ps( ParticleSystem(20) ),
     width_(w),
     height_(h),
     vertex_id(0),
@@ -39,10 +39,10 @@ void RenderManager::printInfo()
 void RenderManager::init()
 {
     printInfo();
-    
+
    ps.randInit();
 
-   glClearColor(.1f, .1f, .1f, 1.f);
+   glClearColor(.4f, .1f, .1f, 1.f);
 
    vertex_id = LoadShader(
     GL_VERTEX_SHADER,
@@ -62,7 +62,7 @@ void RenderManager::init()
     "    );                                  \n"
     "    gl_Position = a_position * rot;     \n"
     "#ifdef GL_ES                            \n"
-    "    gl_PointSize = 3.0;                 \n"
+    "    gl_PointSize = 8.0;                 \n"
     "#endif                                  \n"
     "    v_color = a_color;                  \n"
     "}                                       \n"
@@ -71,13 +71,19 @@ void RenderManager::init()
 
    fragment_id = LoadShader(
     GL_FRAGMENT_SHADER,
+    #ifdef __APPLE__
+    "#version 120\n"
+    #endif
     "#ifdef GL_ES                            \n"
-    "precision mediump float;                \n"
+    "   precision mediump float;             \n"
     "#endif                                  \n"
     "varying vec4 v_color;                   \n"
     "void main()                             \n"
     "{                                       \n"
-    "    gl_FragColor = v_color;             \n"
+    "   vec2 temp = gl_PointCoord - vec2(0.5);\n"
+    "   float f = dot(temp, temp);\n"
+    "   if (f>0.25) discard;\n"
+    "   gl_FragColor = v_color;             \n"
     "}                                       \n"
    );
    printf("- fragment shader loaded\n");
@@ -99,7 +105,7 @@ void RenderManager::init()
 
    
 #ifdef __APPLE__
-   glPointSize(3.0f);
+   glPointSize(8.0f);
 #else
    glEnable(GL_PROGRAM_POINT_SIZE);
 #endif

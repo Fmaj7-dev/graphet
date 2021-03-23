@@ -2,7 +2,14 @@
 #ifndef PARTICLE_SYSTEM_H
 #define PARTICLE_SYSTEM_H
 
-//#include <stddef.h>
+#ifdef __APPLE__
+   #define GL_SILENCE_DEPRECATION
+   #include <GLUT/glut.h>
+#else
+    #define GL_GLEXT_PROTOTYPES
+    #include <GL/glut.h>
+#endif
+
 #include <vector>
 
 class Particle
@@ -35,6 +42,11 @@ public:
 
     Particle* getParticles();
     size_t getNumParticles();
+
+    GLuint vertex_id;
+    GLuint fragment_id;
+    GLuint program_id;
+    GLuint geom_id;
 
 private:
     std::vector<Particle> particles_;
