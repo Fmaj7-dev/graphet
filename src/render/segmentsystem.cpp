@@ -1,4 +1,4 @@
-#include "particlesystem.h"
+#include "segmentsystem.h"
 #include <cstdlib>
 #include <iostream>
 
@@ -7,49 +7,62 @@
     #include <cassert>
 #endif 
 
-ParticleSystem::ParticleSystem(size_t n)
+SegmentSystem::SegmentSystem(size_t n)
 {
-    particles_ = std::vector<Particle>(n);
-    srand(1337);
+    segments_ = std::vector<Segment>(n);
+    srand(420);
 }
 
-ParticleSystem::~ParticleSystem()
+SegmentSystem::~SegmentSystem()
 {
 }
 
-void ParticleSystem::randInitPositions()
+void SegmentSystem::randInitPositions()
 {
-    for (size_t i = 0; i < particles_.size(); ++i)
+    for (size_t i = 0; i < segments_.size(); ++i)
     {
-        float x = ((float) rand() / float(RAND_MAX)*2)-1;
-        float y = ((float) rand() / float(RAND_MAX)*2)-1;
-        float z = ((float) rand() / float(RAND_MAX)*2)-1;
+        float x1 = ((float) rand() / float(RAND_MAX)*2)-1;
+        float y1 = ((float) rand() / float(RAND_MAX)*2)-1;
+        float z1 = ((float) rand() / float(RAND_MAX)*2)-1;
 
-        particles_[i].position_[0] = x;
-        particles_[i].position_[1] = y;
-        particles_[i].position_[2] = z;
+        segments_[i].position1_[0] = x1;
+        segments_[i].position1_[1] = y1;
+        segments_[i].position1_[2] = z1;
 
-        particles_[i].color_[0] = 255;
-        particles_[i].color_[1] = 128;
-        particles_[i].color_[2] = 255;
+        /*if (i % 2)
+        {
+            segments_[i].position1_[0] = 0.1*i;
+            segments_[i].position1_[1] = 0.2;
+            segments_[i].position1_[2] = 0;
+        }
+        else
+        {
+            segments_[i].position1_[0] = 0.1*i;
+            segments_[i].position1_[1] = 0;
+            segments_[i].position1_[2] = 0;
+        }*/
+
+        segments_[i].color1_[0] = 128;
+        segments_[i].color1_[1] = 255;
+        segments_[i].color1_[2] = 255;
     } 
 }
 
-Particle* ParticleSystem::getParticles()
+Segment* SegmentSystem::getSegments()
 {
-    return &particles_[0];
+    return &segments_[0];
 }
-size_t ParticleSystem::getNumParticles()
+size_t SegmentSystem::getNumSegments()
 {
-    return particles_.size();
-}
-
-void ParticleSystem::addParticle(const Particle& p)
-{
-    particles_.push_back(p);
+    return segments_.size();
 }
 
-void ParticleSystem::init()
+void SegmentSystem::addSegment(const Segment& p)
+{
+    segments_.push_back(p);
+}
+
+void SegmentSystem::init()
 {
     randInitPositions();
 
@@ -61,9 +74,6 @@ void ParticleSystem::init()
     "void main()                             \n"
     "{                                       \n"
     "    gl_Position = a_position;           \n"
-    "#ifdef GL_ES                            \n"
-    "    gl_PointSize = 8.0;                 \n"
-    "#endif                                  \n"
     "    v_color = a_color;                  \n"
     "}                                       \n"
     );
@@ -79,11 +89,7 @@ void ParticleSystem::init()
     "varying vec4 v_color;                   \n"
     "void main()                             \n"
     "{                                       \n"
-    "   vec2 temp = gl_PointCoord - vec2(0.5);\n"
-    "   float f = dot(temp, temp);\n"
-    //"   if (f>0.25) discard;\n"
-    "   gl_FragColor = v_color;             \n"
-    " gl_FragColor.a = 1.0-f*5.0;"
+    "   gl_FragColor = v_color;              \n"
     "}                                       \n"
     );
 
@@ -93,31 +99,26 @@ void ParticleSystem::init()
     glAttachShader(program_id, fragment_id);
     glBindAttribLocation(program_id, Context::Position_loc, "a_position");
     glBindAttribLocation(program_id, Context::Color_loc, "a_color");
+
     glLinkProgram(program_id);
     GLint linked = 0;
     glGetProgramiv(program_id, GL_LINK_STATUS, &linked);
     assert(linked);
+    
+    //WTF
     glUseProgram(program_id);
-   
-    #ifdef __APPLE__
-        glPointSize(16.0f);
-    #else
-        glEnable(GL_PROGRAM_POINT_SIZE);
-    #endif
-
     glGenBuffers(1, &geom_id);
     assert(geom_id);
     glBindBuffer(GL_ARRAY_BUFFER, geom_id);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Particle)*getNumParticles(), getParticles(), GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Segment)*getNumSegments(), getSegments(), GL_DYNAMIC_DRAW);
     auto offset = [](size_t value) -> const GLvoid * { return reinterpret_cast<const GLvoid *>(value); };
-
-    glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), offset(0));
+    glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(Segment), offset(0));
     glEnableVertexAttribArray(Context::Position_loc);
-    glVertexAttribPointer(Context::Color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Particle), offset(3 * sizeof(float)));
+    glVertexAttribPointer(Context::Color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Segment), offset(3 * sizeof(float)));
     glEnableVertexAttribArray(Context::Color_loc);
 }
 
-GLint ParticleSystem::LoadShader(GLenum type, const char *src)
+GLint SegmentSystem::LoadShader(GLenum type, const char *src)
 {
     const GLuint id = glCreateShader(type);
     assert(id);
@@ -126,7 +127,7 @@ GLint ParticleSystem::LoadShader(GLenum type, const char *src)
     GLint compiled = 0;
     glGetShaderiv(id, GL_COMPILE_STATUS, &compiled);
     //assert(compiled);
-    printf("* compiled: %d\n", compiled);
+    printf("- compiled: %d\n", compiled);
     if(compiled == GL_FALSE)
     {
         GLint maxLength = 0;
@@ -145,25 +146,12 @@ GLint ParticleSystem::LoadShader(GLenum type, const char *src)
     return id;
 };
 
-void ParticleSystem::draw()
+void SegmentSystem::draw()
 {
-    getParticles()[0].position_[0] += 0.001f;    
-    getParticles()[1].position_[0] += 0.01f;
-    getParticles()[2].position_[0] += 0.0001f;
-    getParticles()[3].position_[0] += 0.01f;
-    getParticles()[4].position_[0] += 0.001f;
-    getParticles()[5].position_[0] += 0.0001f;
-    getParticles()[6].position_[0] += 0.003f;
-    getParticles()[7].position_[0] += 0.0003f;
-
     glUseProgram(program_id);
     glBindBuffer( GL_ARRAY_BUFFER , geom_id );
-    glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(Particle)*getNumParticles() , getParticles() );
-    
-    // alpha for soft circles
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(Segment)*getNumSegments() , getSegments() );
+    glLineWidth(1.0); //FIXME: needed? YES
 
-    glDrawArrays(GL_POINTS, 0, getNumParticles());
-    glDisable(GL_BLEND);
+    glDrawArrays(GL_LINES, 0, getNumSegments());
 }

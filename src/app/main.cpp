@@ -11,8 +11,8 @@
 
 int main(int argc, char *argv[])
 {
-   int width = 400;
-   int height = 300;
+   int width = 640;
+   int height = 480;
 
    RenderManager rm (width, height);
    WindowManager wm (width, height, &rm);

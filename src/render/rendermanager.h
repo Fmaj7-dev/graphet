@@ -2,6 +2,7 @@
 #define RENDER_MANAGER_H
 
 #include "particlesystem.h"
+#include "segmentsystem.h"
 
 #ifdef __APPLE__
    #define GL_SILENCE_DEPRECATION
@@ -33,6 +34,7 @@ private:
     
 
     ParticleSystem ps;
+    SegmentSystem ss;
     
     GLuint width_;
     GLuint height_;

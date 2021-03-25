@@ -28,7 +28,7 @@ public:
     }
 //private:
     float position_[3];
-    unsigned char color_[3];
+    unsigned char color_[4];
 };
 
 class ParticleSystem
@@ -49,7 +49,7 @@ public:
     void draw();
 
 private:
-    class Context{ public: enum type{ Position_loc, Color_loc }; };
+    class Context{ public: enum type{ Position_loc=2, Color_loc=3 }; };
 
     GLuint vertex_id;
     GLuint fragment_id;

@@ -5,6 +5,7 @@
 set (LIBRENDER_SOURCES
 particlesystem.cpp
 rendermanager.cpp
+segmentsystem.cpp
 )
 
 # we are making a library

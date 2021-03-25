@@ -7,7 +7,8 @@
 #endif 
 
 RenderManager::RenderManager(GLuint w, GLuint h)
-  : ps( ParticleSystem(200) ),
+  : ps( ParticleSystem(20) ),
+    ss( SegmentSystem(10)),
     width_(w),
     height_(h),
     vertex_id(0),
@@ -40,8 +41,9 @@ void RenderManager::init()
 {
     printInfo();
 
-    glClearColor(.4f, .1f, .1f, 1.f);
+    glClearColor(.2f, .1f, .1f, 1.f);
 
+    ss.init();
     ps.init();
 }
 
@@ -49,22 +51,24 @@ void RenderManager::draw()
 {
     glViewport(0, 0, width_, height_);
     glClear(GL_COLOR_BUFFER_BIT);
-    glDisable(GL_CULL_FACE);
+    //glDisable(GL_CULL_FACE);
     
     //glUniform1f(g_context.u_time_loc, glutGet(GLUT_ELAPSED_TIME) / 1000.f);
     //glDrawArrays(GL_TRIANGLES, 0, 3);
 
+    
+    ss.draw();
     ps.draw();
 }
 
 void RenderManager::update()
 {
-    ps.getParticles()[0].position_[0] += 0.001f;
+    /*ps.getParticles()[0].position_[0] += 0.001f;
     ps.getParticles()[1].position_[0] += 0.01f;
     ps.getParticles()[2].position_[0] += 0.0001f;
     ps.getParticles()[3].position_[0] += 0.01f;
     ps.getParticles()[4].position_[0] += 0.001f;
     ps.getParticles()[5].position_[0] += 0.0001f;
     ps.getParticles()[6].position_[0] += 0.003f;
-    ps.getParticles()[7].position_[0] += 0.0003f;
+    ps.getParticles()[7].position_[0] += 0.0003f;*/
 }
