@@ -9,7 +9,7 @@
 
 SegmentSystem::SegmentSystem(size_t n)
 {
-    segments_ = std::vector<Segment>(n);
+    segmentPoints_ = std::vector<SegmentPoint>(n);
     srand(420);
 }
 
@@ -19,15 +19,15 @@ SegmentSystem::~SegmentSystem()
 
 void SegmentSystem::randInitPositions()
 {
-    for (size_t i = 0; i < segments_.size(); ++i)
+    for (size_t i = 0; i < segmentPoints_.size(); ++i)
     {
         float x1 = ((float) rand() / float(RAND_MAX)*2)-1;
         float y1 = ((float) rand() / float(RAND_MAX)*2)-1;
         float z1 = ((float) rand() / float(RAND_MAX)*2)-1;
 
-        segments_[i].position1_[0] = x1;
-        segments_[i].position1_[1] = y1;
-        segments_[i].position1_[2] = z1;
+        segmentPoints_[i].position1_[0] = x1;
+        segmentPoints_[i].position1_[1] = y1;
+        segmentPoints_[i].position1_[2] = z1;
 
         /*if (i % 2)
         {
@@ -42,24 +42,25 @@ void SegmentSystem::randInitPositions()
             segments_[i].position1_[2] = 0;
         }*/
 
-        segments_[i].color1_[0] = 128;
-        segments_[i].color1_[1] = 255;
-        segments_[i].color1_[2] = 255;
+        segmentPoints_[i].color1_[0] = 128;
+        segmentPoints_[i].color1_[1] = 255;
+        segmentPoints_[i].color1_[2] = 255;
     } 
 }
 
-Segment* SegmentSystem::getSegments()
+SegmentPoint* SegmentSystem::getSegmentPoints()
 {
-    return &segments_[0];
+    return &segmentPoints_[0];
 }
-size_t SegmentSystem::getNumSegments()
+size_t SegmentSystem::getNumSegmentPoints()
 {
-    return segments_.size();
+    return segmentPoints_.size();
 }
 
 void SegmentSystem::addSegment(const Segment& p)
 {
-    segments_.push_back(p);
+    segmentPoints_.push_back(p.a);
+    segmentPoints_.push_back(p.b);
 }
 
 void SegmentSystem::init()
@@ -110,11 +111,11 @@ void SegmentSystem::init()
     glGenBuffers(1, &geom_id);
     assert(geom_id);
     glBindBuffer(GL_ARRAY_BUFFER, geom_id);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Segment)*getNumSegments(), getSegments(), GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(SegmentPoint)*getNumSegmentPoints(), getSegmentPoints(), GL_DYNAMIC_DRAW);
     auto offset = [](size_t value) -> const GLvoid * { return reinterpret_cast<const GLvoid *>(value); };
-    glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(Segment), offset(0));
+    glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(SegmentPoint), offset(0));
     glEnableVertexAttribArray(Context::Position_loc);
-    glVertexAttribPointer(Context::Color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Segment), offset(3 * sizeof(float)));
+    glVertexAttribPointer(Context::Color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SegmentPoint), offset(3 * sizeof(float)));
     glEnableVertexAttribArray(Context::Color_loc);
 }
 
@@ -148,10 +149,11 @@ GLint SegmentSystem::LoadShader(GLenum type, const char *src)
 
 void SegmentSystem::draw()
 {
+    
     glUseProgram(program_id);
     glBindBuffer( GL_ARRAY_BUFFER , geom_id );
-    glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(Segment)*getNumSegments() , getSegments() );
+    glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(SegmentPoint)*getNumSegmentPoints() , getSegmentPoints() );
     glLineWidth(1.0); //FIXME: needed? YES
 
-    glDrawArrays(GL_LINES, 0, getNumSegments());
+    glDrawArrays(GL_LINES, 0, getNumSegmentPoints());
 }

@@ -43,8 +43,9 @@ void RenderManager::init()
 
     glClearColor(.2f, .1f, .1f, 1.f);
 
-    ss.init();
     ps.init();
+    ss.init();
+    
 }
 
 void RenderManager::draw()

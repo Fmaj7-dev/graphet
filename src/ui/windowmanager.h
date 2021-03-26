@@ -1,7 +1,7 @@
 #ifndef WINDOW_MANAGER_H
 #define WINDOW_MANAGER_H
 
-#include "rendermanager.h"
+#include "render/rendermanager.h"
 
 class WindowManager
 {

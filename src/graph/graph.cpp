@@ -36,3 +36,21 @@ void Graph::print()
     for (auto& link: links_)
         std::cout<<link.from<<" "<<link.to<<std::endl;
 }
+
+void Graph::initRandom()
+{ 
+    Node a("Alekhine", 0.0f, 0.0f);
+    Node b("Barsov", 0.2f, -0.6f);
+    Node c("Carlsen", 0.3f, 0.6f);
+    Node d("Dimitrov", -0.8, -0.3);
+
+    addNode(a);
+    addNode(b);
+    addNode(c);
+    addNode(d);
+
+    addLink(a, b);
+    addLink(b, c);
+    addLink(c, d);
+    addLink(b, d);
+}

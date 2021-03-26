@@ -1,7 +1,7 @@
 //#define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-#include "graph.h"
+#include "graph/graph.h"
 
 
 TEST_CASE("Graph")

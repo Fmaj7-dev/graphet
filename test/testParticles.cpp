@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
-#include "particlesystem.h"
+#include "render/particlesystem.h"
 
 
 TEST_CASE("ParticleSystem")

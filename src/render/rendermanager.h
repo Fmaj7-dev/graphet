@@ -27,6 +27,9 @@ public:
 
     void printInfo();
 
+    void addParticleSystem();
+    void addSegmentSystem();
+
 private:
     GLint LoadShader(GLenum type, const char *src);
 

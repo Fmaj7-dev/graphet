@@ -1,8 +1,9 @@
 #define GL_GLEXT_PROTOTYPES
 
-#include "particlesystem.h"
-#include "rendermanager.h"
-#include "windowmanager.h"
+#include "render/particlesystem.h"
+#include "render/rendermanager.h"
+#include "ui/windowmanager.h"
+#include "graph/graph.h"
 
 #include <cstdio>
 #include <cassert>
@@ -19,6 +20,9 @@ int main(int argc, char *argv[])
 
    wm.init( argc, argv );
    rm.init();
+
+   Graph gr;
+   gr.initRandom();
 
    wm.mainLoop();
 

@@ -156,14 +156,15 @@ void ParticleSystem::draw()
     getParticles()[6].position_[0] += 0.003f;
     getParticles()[7].position_[0] += 0.0003f;
 
-    glUseProgram(program_id);
-    glBindBuffer( GL_ARRAY_BUFFER , geom_id );
-    glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(Particle)*getNumParticles() , getParticles() );
-    
     // alpha for soft circles
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+    glUseProgram(program_id);
+    glBindBuffer( GL_ARRAY_BUFFER , geom_id );
+    glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(Particle)*getNumParticles() , getParticles() );
+    
     glDrawArrays(GL_POINTS, 0, getNumParticles());
+
     glDisable(GL_BLEND);
 }

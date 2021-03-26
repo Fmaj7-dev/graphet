@@ -1,7 +1,7 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#include <particlesystem.h>
+#include "render/particlesystem.h"
 
 #include <vector>
 #include <string>
@@ -9,9 +9,13 @@
 class Node
 {
 public:
-    Node(std::string n):name(n){}
+    Node(std::string n, float xc = 0.0f, float yc = 0.0f )
+    : name(n), x(xc), y(yc)
+    {}
     size_t id;
     std::string name;
+    float x;
+    float y;
 };
 
 class Link
@@ -33,6 +37,8 @@ public:
 
     void addLink(const Link& l);
     void addLink(const Node& a, const Node& b, float force = 1.0f);
+
+    void initRandom();
 
     void print();
 
