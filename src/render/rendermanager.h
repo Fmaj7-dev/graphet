@@ -27,8 +27,8 @@ public:
 
     void printInfo();
 
-    void addParticleSystem();
-    void addSegmentSystem();
+    ParticleSystem* addParticleSystem(size_t hint_nparticles);
+    SegmentSystem* addSegmentSystem(size_t hint_nsegments);
 
 private:
     GLint LoadShader(GLenum type, const char *src);
@@ -36,8 +36,8 @@ private:
 private:
     
 
-    ParticleSystem ps;
-    SegmentSystem ss;
+    std::vector<ParticleSystem> particleSystems_;
+    std::vector<SegmentSystem> segmentSystems_;
     
     GLuint width_;
     GLuint height_;

@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
    wm.init( argc, argv );
    rm.init();
 
-   Graph gr;
+   Graph gr(rm);
    gr.initRandom();
 
    wm.mainLoop();

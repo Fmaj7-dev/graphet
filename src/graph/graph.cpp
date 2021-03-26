@@ -1,9 +1,15 @@
 #include "graph.h"
 #include <iostream>
 
-Graph::Graph()
+Graph::Graph(RenderManager& rm)
 :num_nodes_(0)
-{}
+{
+    ps_ = rm.addParticleSystem(10);
+    ss_ = rm.addSegmentSystem(10);
+
+    ps_->init();
+    ss_->init();
+}
 
 void Graph::addNode( Node& n )
 {

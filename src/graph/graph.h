@@ -1,6 +1,8 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
+#include "render/rendermanager.h"
+#include "render/segmentsystem.h"
 #include "render/particlesystem.h"
 
 #include <vector>
@@ -30,7 +32,7 @@ public:
 class Graph
 {
 public:
-    Graph();
+    Graph(RenderManager& rm);
 
     void addNode(Node& node);
     void rmNode(size_t id);
@@ -48,7 +50,9 @@ private:
     std::vector<Node> nodes_;
     std::vector<Link> links_;
 
-    //ParticleSystem ps_;
+    //RenderManager& rm_;
+    ParticleSystem* ps_;
+    SegmentSystem* ss_;
 };
 
 #endif

@@ -7,8 +7,8 @@
 #endif 
 
 RenderManager::RenderManager(GLuint w, GLuint h)
-  : ps( ParticleSystem(20) ),
-    ss( SegmentSystem(10)),
+  : //ps( ParticleSystem(20) ),
+    //ss( SegmentSystem(10)),
     width_(w),
     height_(h),
     vertex_id(0),
@@ -43,9 +43,21 @@ void RenderManager::init()
 
     glClearColor(.2f, .1f, .1f, 1.f);
 
-    ps.init();
-    ss.init();
+    //ps.init();
+    //ss.init();
     
+}
+
+ParticleSystem* RenderManager::addParticleSystem( size_t hint_nparticles )
+{
+    particleSystems_.push_back( ParticleSystem( hint_nparticles ) );
+    return &particleSystems_[ particleSystems_.size() - 1 ];
+}
+
+SegmentSystem* RenderManager::addSegmentSystem( size_t hint_nsegments)
+{
+    segmentSystems_.push_back( SegmentSystem( hint_nsegments ) );
+    return &segmentSystems_[ segmentSystems_.size() - 1];
 }
 
 void RenderManager::draw()
@@ -58,8 +70,13 @@ void RenderManager::draw()
     //glDrawArrays(GL_TRIANGLES, 0, 3);
 
     
-    ss.draw();
-    ps.draw();
+    /*ss.draw();
+    ps.draw();*/
+    for (auto&& ss : segmentSystems_)
+        ss.draw();
+
+    for (auto&& ps : particleSystems_)
+        ps.draw();
 }
 
 void RenderManager::update()
