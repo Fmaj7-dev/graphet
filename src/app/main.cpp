@@ -15,9 +15,9 @@ int main(int argc, char *argv[])
    int width = 640;
    int height = 480;
 
-   RenderManager rm (width, height);
-   Graph graph(rm);
-   WindowManager wm (width, height, &rm, &graph);
+   RenderManager rm ( width, height );
+   Graph graph( &rm );
+   WindowManager wm (width, height, &rm, &graph );
 
    wm.init( argc, argv );
    rm.init();

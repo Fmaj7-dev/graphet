@@ -2,9 +2,10 @@
 #include "utils/log.h"
 #include <iostream>
 
-Graph::Graph(RenderManager& rm)
-: dirty_(true),
-  rm_(&rm)
+Graph::Graph(RenderManager* rm)
+: num_nodes_(0),
+  dirty_(true),
+  rm_(rm)
 {
 
 }
@@ -68,10 +69,15 @@ void Graph::initRandom()
     ps_ = rm_->addParticleSystem( getNumNodes() );
     ss_ = rm_->addSegmentSystem( getNumLinks() );
 
-    synchronizeBuffers();
+    
 
     ps_->init();
     ss_->init();
+
+    synchronizeBuffers();
+
+    //etlog(std::string("num segment points after init: ") + std::to_string(ss_->getNumSegmentPoints()));
+    etlog(std::string("num links after init: ") + std::to_string(getNumLinks()));
 }
 
 void Graph::synchronizeBuffers()
@@ -81,30 +87,26 @@ void Graph::synchronizeBuffers()
 
     if (ps_->getNumParticles() != getNumNodes())
     {
-        etlog("need to recreate node buffers");
-        etlog(std::string("num particles: ") + std::to_string(ps_->getNumParticles()));
-        etlog(std::string("num nodes: ") + std::to_string(getNumNodes()));
+        ps_->recreateBuffers(getNumNodes());
     }
 
-    Particle* particlesA = ps_->getParticles();
+    Particle* particles = ps_->getParticles();
     int i = 0;
+
     for( auto&& node : nodes_ )
     {
         Particle p(node.x, node.y, node.z, node.r, node.g, node.b);
-        particlesA[i++] = p;
+        particles[i++] = p;
     }
-
-    
 
     if(ss_->getNumSegmentPoints() != getNumLinks()*2)
     {
-        etlog("need to recreate link buffers");
-        etlog(std::string("num segment points: ") + std::to_string(ss_->getNumSegmentPoints()));
-        etlog(std::string("num links: ") + std::to_string(getNumLinks()));
+        ss_->recreateBuffers( getNumLinks() );
     }
 
     SegmentPoint* segmentPoints = ss_->getSegmentPoints();
     int j = 0;
+
     for( auto&& link : links_ )
     {
         Node& a = nodes_[link.from];
@@ -115,6 +117,7 @@ void Graph::synchronizeBuffers()
 
         segmentPoints[2*j] = pa;
         segmentPoints[2*j+1] = pb;
+
         ++j;
     }
 
@@ -123,6 +126,12 @@ void Graph::synchronizeBuffers()
 
 void Graph::update()
 {
+    Node n("", ((float) rand() / float(RAND_MAX)*2)-1, ((float) rand() / float(RAND_MAX)*2)-1);
+    n.r=n.g=n.b= (char)125;
+    addNode(n);
+
+    addLink(n, nodes_[nodes_.size()-2]);
+
     int i=0;
     for(auto&& n : nodes_)
     {

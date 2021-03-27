@@ -40,17 +40,17 @@ public:
 class Graph
 {
 public:
-    Graph(RenderManager& rm);
+    Graph( RenderManager* rm );
 
     // node operations
-    void addNode(Node& node);
-    void rmNode(size_t id);
+    void addNode( Node& node);
+    void rmNode( size_t id );
     size_t getNumNodes() const;
 
     // link operations
-    void addLink(const Link& l);
-    void addLink(const Node& a, const Node& b, float force = 1.0f);
-    size_t getNumLinks()const;
+    void addLink( const Link& l );
+    void addLink( const Node& a, const Node& b, float force = 1.0f );
+    size_t getNumLinks() const;
 
     void update();
 

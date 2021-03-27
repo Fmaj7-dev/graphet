@@ -1,4 +1,6 @@
 #include "particlesystem.h"
+#include "utils/log.h"
+
 #include <cstdlib>
 #include <iostream>
 
@@ -17,7 +19,7 @@ ParticleSystem::~ParticleSystem()
 {
 }
 
-void ParticleSystem::randInitPositions()
+/*void ParticleSystem::randInitPositions()
 {
     for (size_t i = 0; i < particles_.size(); ++i)
     {
@@ -33,7 +35,7 @@ void ParticleSystem::randInitPositions()
         particles_[i].color_[1] = 128;
         particles_[i].color_[2] = 255;
     } 
-}
+}*/
 
 Particle* ParticleSystem::getParticles()
 {
@@ -49,6 +51,27 @@ void ParticleSystem::addParticle(const Particle& p)
     particles_.push_back(p);
 }
 
+void ParticleSystem::recreateBuffers(size_t n)
+{
+    etlog(std::string("recreate particle buffers ")+std::to_string(n));
+
+    glUseProgram(program_id);
+
+    particles_ = std::vector<Particle>(n);
+
+    //glGenBuffers(1, &geom_id);
+    //assert(geom_id);
+    glBindBuffer(GL_ARRAY_BUFFER, geom_id);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Particle)*getNumParticles(), getParticles(), GL_DYNAMIC_DRAW);
+
+    auto offset = [](size_t value) -> const GLvoid * { return reinterpret_cast<const GLvoid *>(value); };
+
+    glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), offset(0));
+    glEnableVertexAttribArray(Context::Position_loc);
+    glVertexAttribPointer(Context::Color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Particle), offset(3 * sizeof(float)));
+    glEnableVertexAttribArray(Context::Color_loc);
+}
+
 void ParticleSystem::init()
 {
     //randInitPositions();
@@ -62,7 +85,7 @@ void ParticleSystem::init()
     "{                                       \n"
     "    gl_Position = a_position;           \n"
     "#ifdef GL_ES                            \n"
-    "    gl_PointSize = 8.0;                 \n"
+    "    gl_PointSize = 16.0;                 \n"
     "#endif                                  \n"
     "    v_color = a_color;                  \n"
     "}                                       \n"
@@ -104,6 +127,8 @@ void ParticleSystem::init()
     #else
         glEnable(GL_PROGRAM_POINT_SIZE);
     #endif
+
+    etlog("reserving buffer for "+std::to_string(getNumParticles())+std::string(" particles"));
 
     glGenBuffers(1, &geom_id);
     assert(geom_id);

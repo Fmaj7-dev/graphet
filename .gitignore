@@ -12,3 +12,4 @@ Makefile
 CMakeOutput.log
 TargetDirectories.txt
 CMakeFiles
+src/.DS_Store

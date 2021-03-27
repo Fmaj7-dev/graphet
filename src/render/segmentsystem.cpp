@@ -1,4 +1,6 @@
 #include "segmentsystem.h"
+#include "utils/log.h"
+
 #include <cstdlib>
 #include <iostream>
 
@@ -17,7 +19,7 @@ SegmentSystem::~SegmentSystem()
 {
 }
 
-void SegmentSystem::randInitPositions()
+/*void SegmentSystem::randInitPositions()
 {
     for (size_t i = 0; i < segmentPoints_.size(); ++i)
     {
@@ -33,7 +35,7 @@ void SegmentSystem::randInitPositions()
         segmentPoints_[i].color1_[1] = 255;
         segmentPoints_[i].color1_[2] = 255;
     } 
-}
+}*/
 
 SegmentPoint* SegmentSystem::getSegmentPoints()
 {
@@ -48,6 +50,26 @@ void SegmentSystem::addSegment(const Segment& p)
 {
     segmentPoints_.push_back(p.a);
     segmentPoints_.push_back(p.b);
+}
+
+void SegmentSystem::recreateBuffers(size_t n)
+{
+    etlog("recreate segment point buffers "+std::to_string(n*2));
+
+    glUseProgram(program_id);
+
+    segmentPoints_ = std::vector<SegmentPoint>(n*2);
+
+    glGenBuffers(1, &geom_id);
+    assert(geom_id);
+    glBindBuffer(GL_ARRAY_BUFFER, geom_id);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(SegmentPoint)*getNumSegmentPoints(), getSegmentPoints(), GL_DYNAMIC_DRAW);
+
+    auto offset = [](size_t value) -> const GLvoid * { return reinterpret_cast<const GLvoid *>(value); };
+    glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(SegmentPoint), offset(0));
+    glEnableVertexAttribArray(Context::Position_loc);
+    glVertexAttribPointer(Context::Color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SegmentPoint), offset(3 * sizeof(float)));
+    glEnableVertexAttribArray(Context::Color_loc);
 }
 
 void SegmentSystem::init()
@@ -93,7 +115,8 @@ void SegmentSystem::init()
     glGetProgramiv(program_id, GL_LINK_STATUS, &linked);
     assert(linked);
     
-    //WTF
+    etlog("reserving buffer for "+std::to_string(getNumSegmentPoints())+std::string(" segmentpoints"));
+    
     glUseProgram(program_id);
     glGenBuffers(1, &geom_id);
     assert(geom_id);

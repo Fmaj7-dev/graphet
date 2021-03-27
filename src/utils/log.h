@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-void etlog(std::string s)
+static void etlog(std::string s)
 {
     std::cout<<s<<std::endl;
 }

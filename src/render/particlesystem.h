@@ -16,7 +16,7 @@ class Particle
 {
 public:
     Particle() = default;
-    Particle(float x, float y, float z, int r, int g, int b)
+    Particle( float x, float y, float z, int r, int g, int b )
     {
         position_[0] = x;
         position_[1] = y;
@@ -34,19 +34,22 @@ public:
 class ParticleSystem
 {
 public:
-    ParticleSystem(size_t n = 0);
+    ParticleSystem( size_t n = 0 );
     ~ParticleSystem();
-    void randInitPositions();
+
+    // init
+    //void randInitPositions();
 
     // particles
-    void addParticle(const Particle&);
+    void addParticle( const Particle& );
     Particle* getParticles();
     size_t getNumParticles();
 
     // render
     void init();
-    GLint LoadShader(GLenum type, const char *src);
+    GLint LoadShader( GLenum type, const char *src );
     void draw();
+    void recreateBuffers( size_t n );
 
 private:
     class Context{ public: enum type{ Position_loc=2, Color_loc=3 }; };

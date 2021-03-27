@@ -1,5 +1,6 @@
 
 #include "rendermanager.h"
+#include "utils/log.h"
 
 #if defined (EMSCRIPTEN)
     #include <stdio.h>
@@ -45,7 +46,6 @@ void RenderManager::init()
 
     //ps.init();
     //ss.init();
-    
 }
 
 ParticleSystem* RenderManager::addParticleSystem( size_t hint_nparticles )
@@ -78,6 +78,12 @@ void RenderManager::draw()
 
     for (auto&& ps : particleSystems_)
         ps.draw();
+
+    GLenum err;
+    while((err = glGetError()) != GL_NO_ERROR)
+    {
+        etlog("error detected");
+    }
 }
 
 void RenderManager::update()

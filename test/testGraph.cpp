@@ -12,7 +12,7 @@ TEST_CASE("Graph")
     Node d("Dimitrov");
 
     RenderManager rm (20, 20);
-    Graph g(rm);
+    Graph g(&rm);
     g.addNode(a);
     g.addNode(b);
     g.addNode(c);

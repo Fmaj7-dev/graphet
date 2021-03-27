@@ -45,17 +45,21 @@ class SegmentSystem
 public:
     SegmentSystem(size_t n = 0);
     ~SegmentSystem();
-    void randInitPositions();
+
+    // init
+    //void randInitPositions();
+    
 
     // segments
-    void addSegment(const Segment&);
+    void addSegment( const Segment& );
     SegmentPoint* getSegmentPoints();
     size_t getNumSegmentPoints();
 
     // render
     void init();
-    GLint LoadShader(GLenum type, const char *src);
+    GLint LoadShader( GLenum type, const char *src );
     void draw();
+    void recreateBuffers( size_t n );
 
 private:
     class Context{ public: enum type{ Position_loc=0, Color_loc=1 }; };
