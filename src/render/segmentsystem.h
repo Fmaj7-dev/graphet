@@ -17,8 +17,7 @@ class SegmentPoint
 public:
     SegmentPoint() = default;
     SegmentPoint( float x1, float y1, float z1,
-          /*float x2, float y2, float z2, */
-          int r, int g, int b )
+                  int r, int g, int b )
     {
         position1_[0] = x1;
         position1_[1] = y1;

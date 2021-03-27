@@ -1,7 +1,11 @@
 #include "windowmanager.h"
 
+#include "render/rendermanager.h"
+#include "graph/graph.h"
+
 static WindowManager* wm;
 
+// global glut functions
 void resize_global(int width, int height)
 {
    wm->resize( width, height );
@@ -17,8 +21,9 @@ void update_global()
    wm->update();
 }
 
-WindowManager::WindowManager(int w, int h, RenderManager* rm)
+WindowManager::WindowManager(int w, int h, RenderManager* rm, Graph* graph)
 : rm_(rm),
+  graph_(graph),
   width_(w),
   height_(h)
 {
@@ -42,6 +47,8 @@ void WindowManager::draw()
 void WindowManager::update()
 {
     rm_->update();
+    graph_->update();
+    
     glutPostRedisplay();   
 }
 

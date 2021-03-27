@@ -72,6 +72,7 @@ void RenderManager::draw()
     
     /*ss.draw();
     ps.draw();*/
+
     for (auto&& ss : segmentSystems_)
         ss.draw();
 
@@ -81,12 +82,5 @@ void RenderManager::draw()
 
 void RenderManager::update()
 {
-    /*ps.getParticles()[0].position_[0] += 0.001f;
-    ps.getParticles()[1].position_[0] += 0.01f;
-    ps.getParticles()[2].position_[0] += 0.0001f;
-    ps.getParticles()[3].position_[0] += 0.01f;
-    ps.getParticles()[4].position_[0] += 0.001f;
-    ps.getParticles()[5].position_[0] += 0.0001f;
-    ps.getParticles()[6].position_[0] += 0.003f;
-    ps.getParticles()[7].position_[0] += 0.0003f;*/
+
 }

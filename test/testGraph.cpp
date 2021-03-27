@@ -2,7 +2,7 @@
 #include "catch.hpp"
 
 #include "graph/graph.h"
-
+#include "render/rendermanager.h"
 
 TEST_CASE("Graph")
 {
@@ -11,7 +11,8 @@ TEST_CASE("Graph")
     Node c("Carlsen");
     Node d("Dimitrov");
 
-    Graph g;
+    RenderManager rm (20, 20);
+    Graph g(rm);
     g.addNode(a);
     g.addNode(b);
     g.addNode(c);

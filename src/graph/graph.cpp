@@ -1,14 +1,12 @@
 #include "graph.h"
+#include "utils/log.h"
 #include <iostream>
 
 Graph::Graph(RenderManager& rm)
-:num_nodes_(0)
+: dirty_(true),
+  rm_(&rm)
 {
-    ps_ = rm.addParticleSystem(10);
-    ss_ = rm.addSegmentSystem(10);
 
-    ps_->init();
-    ss_->init();
 }
 
 void Graph::addNode( Node& n )
@@ -43,20 +41,95 @@ void Graph::print()
         std::cout<<link.from<<" "<<link.to<<std::endl;
 }
 
+size_t Graph::getNumNodes() const
+{
+    return nodes_.size();
+}
+
+size_t Graph::getNumLinks()const
+{
+    return links_.size();
+}
+
 void Graph::initRandom()
 { 
-    Node a("Alekhine", 0.0f, 0.0f);
-    Node b("Barsov", 0.2f, -0.6f);
-    Node c("Carlsen", 0.3f, 0.6f);
-    Node d("Dimitrov", -0.8, -0.3);
+    for (int i=0; i < 100; ++i)
+    {
+        Node n("", ((float) rand() / float(RAND_MAX)*2)-1, ((float) rand() / float(RAND_MAX)*2)-1);
+        n.r = i*12 % 256;
+        n.g = i*3 % 256;
+        n.b = i*5 % 256;
+        addNode(n);
 
-    addNode(a);
-    addNode(b);
-    addNode(c);
-    addNode(d);
+        if (i>0)
+            addLink(n, nodes_[i-1]);
+    }
 
-    addLink(a, b);
-    addLink(b, c);
-    addLink(c, d);
-    addLink(b, d);
+    ps_ = rm_->addParticleSystem( getNumNodes() );
+    ss_ = rm_->addSegmentSystem( getNumLinks() );
+
+    synchronizeBuffers();
+
+    ps_->init();
+    ss_->init();
+}
+
+void Graph::synchronizeBuffers()
+{
+    if (!dirty_)
+        return;
+
+    if (ps_->getNumParticles() != getNumNodes())
+    {
+        etlog("need to recreate node buffers");
+        etlog(std::string("num particles: ") + std::to_string(ps_->getNumParticles()));
+        etlog(std::string("num nodes: ") + std::to_string(getNumNodes()));
+    }
+
+    Particle* particlesA = ps_->getParticles();
+    int i = 0;
+    for( auto&& node : nodes_ )
+    {
+        Particle p(node.x, node.y, node.z, node.r, node.g, node.b);
+        particlesA[i++] = p;
+    }
+
+    
+
+    if(ss_->getNumSegmentPoints() != getNumLinks()*2)
+    {
+        etlog("need to recreate link buffers");
+        etlog(std::string("num segment points: ") + std::to_string(ss_->getNumSegmentPoints()));
+        etlog(std::string("num links: ") + std::to_string(getNumLinks()));
+    }
+
+    SegmentPoint* segmentPoints = ss_->getSegmentPoints();
+    int j = 0;
+    for( auto&& link : links_ )
+    {
+        Node& a = nodes_[link.from];
+        Node& b = nodes_[link.to];
+
+        SegmentPoint pa(a.x, a.y, a.z, a.r, a.g, a.b);
+        SegmentPoint pb(b.x, b.y, b.z, b.r, b.g, b.b);
+
+        segmentPoints[2*j] = pa;
+        segmentPoints[2*j+1] = pb;
+        ++j;
+    }
+
+    dirty_ = false;
+}
+
+void Graph::update()
+{
+    int i=0;
+    for(auto&& n : nodes_)
+    {
+        n.x += 0.0001 * ((i++)%5 - 2);
+    }
+        
+    dirty_ = true;
+
+    synchronizeBuffers();
 }

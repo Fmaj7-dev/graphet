@@ -51,7 +51,7 @@ void ParticleSystem::addParticle(const Particle& p)
 
 void ParticleSystem::init()
 {
-    randInitPositions();
+    //randInitPositions();
 
     vertex_id = LoadShader(
     GL_VERTEX_SHADER,
@@ -147,15 +147,6 @@ GLint ParticleSystem::LoadShader(GLenum type, const char *src)
 
 void ParticleSystem::draw()
 {
-    getParticles()[0].position_[0] += 0.001f;    
-    getParticles()[1].position_[0] += 0.01f;
-    getParticles()[2].position_[0] += 0.0001f;
-    getParticles()[3].position_[0] += 0.01f;
-    getParticles()[4].position_[0] += 0.001f;
-    getParticles()[5].position_[0] += 0.0001f;
-    getParticles()[6].position_[0] += 0.003f;
-    getParticles()[7].position_[0] += 0.0003f;
-
     // alpha for soft circles
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

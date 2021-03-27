@@ -1,12 +1,13 @@
 #ifndef WINDOW_MANAGER_H
 #define WINDOW_MANAGER_H
 
-#include "render/rendermanager.h"
+class RenderManager;
+class Graph;
 
 class WindowManager
 {
 public:
-    WindowManager(int w, int h, RenderManager* rm);
+    WindowManager(int w, int h, RenderManager* rm, Graph* graph);
 
     void resize(int w, int h);
 
@@ -21,6 +22,7 @@ public:
 private:
 
     RenderManager* rm_;
+    Graph* graph_;
 
     int width_;
     int height_;

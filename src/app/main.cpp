@@ -16,13 +16,14 @@ int main(int argc, char *argv[])
    int height = 480;
 
    RenderManager rm (width, height);
-   WindowManager wm (width, height, &rm);
+   Graph graph(rm);
+   WindowManager wm (width, height, &rm, &graph);
 
    wm.init( argc, argv );
    rm.init();
 
-   Graph gr(rm);
-   gr.initRandom();
+   
+   graph.initRandom();
 
    wm.mainLoop();
 

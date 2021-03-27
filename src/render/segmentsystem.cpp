@@ -9,7 +9,7 @@
 
 SegmentSystem::SegmentSystem(size_t n)
 {
-    segmentPoints_ = std::vector<SegmentPoint>(n);
+    segmentPoints_ = std::vector<SegmentPoint>(n*2);
     srand(420);
 }
 
@@ -28,19 +28,6 @@ void SegmentSystem::randInitPositions()
         segmentPoints_[i].position1_[0] = x1;
         segmentPoints_[i].position1_[1] = y1;
         segmentPoints_[i].position1_[2] = z1;
-
-        /*if (i % 2)
-        {
-            segments_[i].position1_[0] = 0.1*i;
-            segments_[i].position1_[1] = 0.2;
-            segments_[i].position1_[2] = 0;
-        }
-        else
-        {
-            segments_[i].position1_[0] = 0.1*i;
-            segments_[i].position1_[1] = 0;
-            segments_[i].position1_[2] = 0;
-        }*/
 
         segmentPoints_[i].color1_[0] = 128;
         segmentPoints_[i].color1_[1] = 255;
@@ -65,7 +52,7 @@ void SegmentSystem::addSegment(const Segment& p)
 
 void SegmentSystem::init()
 {
-    randInitPositions();
+    //randInitPositions();
 
     vertex_id = LoadShader(
     GL_VERTEX_SHADER,
