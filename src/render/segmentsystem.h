@@ -2,6 +2,8 @@
 #ifndef SEGMENT_SYSTEM_H
 #define SEGMENT_SYSTEM_H
 
+#include "renderable.h"
+
 #ifdef __APPLE__
    #define GL_SILENCE_DEPRECATION
    #include <GLUT/glut.h>
@@ -40,7 +42,7 @@ public:
 };
 
 
-class SegmentSystem
+class SegmentSystem: public Renderable
 {
 public:
     SegmentSystem(size_t n = 0);
@@ -57,7 +59,7 @@ public:
 
     // render
     void init();
-    GLint LoadShader( GLenum type, const char *src );
+    //GLint LoadShader( GLenum type, const char *src );
     void draw();
     void recreateBuffers( size_t n );
 

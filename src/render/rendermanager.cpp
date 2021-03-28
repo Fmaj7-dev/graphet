@@ -44,8 +44,7 @@ void RenderManager::init()
 
     glClearColor(.2f, .1f, .1f, 1.f);
 
-    //ps.init();
-    //ss.init();
+    bg.init();
 }
 
 ParticleSystem* RenderManager::addParticleSystem( size_t hint_nparticles )
@@ -69,10 +68,8 @@ void RenderManager::draw()
     //glUniform1f(g_context.u_time_loc, glutGet(GLUT_ELAPSED_TIME) / 1000.f);
     //glDrawArrays(GL_TRIANGLES, 0, 3);
 
+    //bg.draw();
     
-    /*ss.draw();
-    ps.draw();*/
-
     for (auto&& ss : segmentSystems_)
         ss.draw();
 

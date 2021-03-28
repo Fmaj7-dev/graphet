@@ -1,5 +1,5 @@
 #include "graph.h"
-#include "utils/log.h"
+//#include "utils/log.h"
 #include <iostream>
 
 Graph::Graph(RenderManager* rm)
@@ -57,9 +57,9 @@ void Graph::initRandom()
     for (int i=0; i < 100; ++i)
     {
         Node n("", ((float) rand() / float(RAND_MAX)*2)-1, ((float) rand() / float(RAND_MAX)*2)-1);
-        n.r = i*12 % 256;
-        n.g = i*3 % 256;
-        n.b = i*5 % 256;
+        n.r = i*17 % 256;
+        n.g = i*63 % 256;
+        n.b = i*13 % 256;
         addNode(n);
 
         if (i>0)
@@ -69,15 +69,13 @@ void Graph::initRandom()
     ps_ = rm_->addParticleSystem( getNumNodes() );
     ss_ = rm_->addSegmentSystem( getNumLinks() );
 
-    
-
     ps_->init();
     ss_->init();
 
     synchronizeBuffers();
 
-    //etlog(std::string("num segment points after init: ") + std::to_string(ss_->getNumSegmentPoints()));
-    etlog(std::string("num links after init: ") + std::to_string(getNumLinks()));
+    //etlog(std::string("num segment points after init: ") + std::to_string(1/*ss_->getNumSegmentPoints()*/));
+    //etlog(std::string("num links after init: ") + std::to_string(0/*getNumLinks()*/));
 }
 
 void Graph::synchronizeBuffers()
@@ -126,16 +124,17 @@ void Graph::synchronizeBuffers()
 
 void Graph::update()
 {
-    Node n("", ((float) rand() / float(RAND_MAX)*2)-1, ((float) rand() / float(RAND_MAX)*2)-1);
+    /*Node n("", ((float) rand() / float(RAND_MAX)*2)-1, ((float) rand() / float(RAND_MAX)*2)-1);
     n.r=n.g=n.b= (char)125;
     addNode(n);
 
-    addLink(n, nodes_[nodes_.size()-2]);
+    addLink(n, nodes_[nodes_.size()-2]);*/
 
     int i=0;
     for(auto&& n : nodes_)
     {
-        n.x += 0.0001 * ((i++)%5 - 2);
+        n.x += 0.00003 * ((i++)%5 - 2);
+        n.y += 0.00003 * ((i++)%7 - 3.5);
     }
         
     dirty_ = true;

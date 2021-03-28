@@ -4,10 +4,11 @@
 #include <cstdlib>
 #include <iostream>
 
-#if defined (EMSCRIPTEN)
+/*#if defined (EMSCRIPTEN)
     #include <stdio.h>
-    #include <cassert>
-#endif 
+#endif */
+
+#include <cassert>
 
 ParticleSystem::ParticleSystem(size_t n)
 {
@@ -18,24 +19,6 @@ ParticleSystem::ParticleSystem(size_t n)
 ParticleSystem::~ParticleSystem()
 {
 }
-
-/*void ParticleSystem::randInitPositions()
-{
-    for (size_t i = 0; i < particles_.size(); ++i)
-    {
-        float x = ((float) rand() / float(RAND_MAX)*2)-1;
-        float y = ((float) rand() / float(RAND_MAX)*2)-1;
-        float z = ((float) rand() / float(RAND_MAX)*2)-1;
-
-        particles_[i].position_[0] = x;
-        particles_[i].position_[1] = y;
-        particles_[i].position_[2] = z;
-
-        particles_[i].color_[0] = 255;
-        particles_[i].color_[1] = 128;
-        particles_[i].color_[2] = 255;
-    } 
-}*/
 
 Particle* ParticleSystem::getParticles()
 {
@@ -141,34 +124,6 @@ void ParticleSystem::init()
     glVertexAttribPointer(Context::Color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Particle), offset(3 * sizeof(float)));
     glEnableVertexAttribArray(Context::Color_loc);
 }
-
-GLint ParticleSystem::LoadShader(GLenum type, const char *src)
-{
-    const GLuint id = glCreateShader(type);
-    assert(id);
-    glShaderSource(id, 1, &src, nullptr);
-    glCompileShader(id);
-    GLint compiled = 0;
-    glGetShaderiv(id, GL_COMPILE_STATUS, &compiled);
-    //assert(compiled);
-    printf("* compiled: %d\n", compiled);
-    if(compiled == GL_FALSE)
-    {
-        GLint maxLength = 0;
-        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &maxLength);
-
-        // The maxLength includes the NULL character
-        std::vector<GLchar> errorLog(maxLength);
-        glGetShaderInfoLog(id, maxLength, &maxLength, &errorLog[0]);
-        printf("%s", &errorLog[0]);
-
-        // Provide the infolog in whatever manor you deem best.
-        // Exit with failure.
-        glDeleteShader(id);
-        return 0;
-    }
-    return id;
-};
 
 void ParticleSystem::draw()
 {

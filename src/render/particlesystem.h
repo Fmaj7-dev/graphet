@@ -2,6 +2,8 @@
 #ifndef PARTICLE_SYSTEM_H
 #define PARTICLE_SYSTEM_H
 
+#include "renderable.h"
+
 #ifdef __APPLE__
    #define GL_SILENCE_DEPRECATION
    #include <GLUT/glut.h>
@@ -12,7 +14,7 @@
 
 #include <vector>
 
-class Particle
+class Particle 
 {
 public:
     Particle() = default;
@@ -31,7 +33,7 @@ public:
     unsigned char color_[4];
 };
 
-class ParticleSystem
+class ParticleSystem: public Renderable
 {
 public:
     ParticleSystem( size_t n = 0 );
@@ -47,12 +49,11 @@ public:
 
     // render
     void init();
-    GLint LoadShader( GLenum type, const char *src );
     void draw();
     void recreateBuffers( size_t n );
 
 private:
-    class Context{ public: enum type{ Position_loc=2, Color_loc=3 }; };
+    class Context{ public: enum type{ Position_loc=0, Color_loc=1 }; };
 
     GLuint vertex_id;
     GLuint fragment_id;

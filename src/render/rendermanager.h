@@ -3,6 +3,7 @@
 
 #include "particlesystem.h"
 #include "segmentsystem.h"
+#include "background.h"
 
 #ifdef __APPLE__
    #define GL_SILENCE_DEPRECATION
@@ -38,6 +39,9 @@ private:
 
     std::vector<ParticleSystem> particleSystems_;
     std::vector<SegmentSystem> segmentSystems_;
+
+    Background bg;
+
     
     GLuint width_;
     GLuint height_;

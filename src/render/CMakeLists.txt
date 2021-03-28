@@ -6,6 +6,8 @@ set (LIBRENDER_SOURCES
 particlesystem.cpp
 rendermanager.cpp
 segmentsystem.cpp
+renderable.cpp
+background.cpp
 )
 
 # we are making a library
