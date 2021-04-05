@@ -68,7 +68,7 @@ void ParticleSystem::init()
     "{                                       \n"
     "    gl_Position = a_position;           \n"
     "#ifdef GL_ES                            \n"
-    "    gl_PointSize = 16.0;                 \n"
+    "    gl_PointSize = 16.0;                \n"
     "#endif                                  \n"
     "    v_color = a_color;                  \n"
     "}                                       \n"

@@ -2,10 +2,10 @@
 
 #include <cassert>
 
-GLfloat vVertices[] = {  -0.9, -0.9, 0,
-                         -0.9,  0.9, 0,
-                          0.9, -0.9, 0,
-                          0.9,  0.9, 0 };
+GLfloat vVertices[] = {  -0.9, -0.9, -0.5,
+                         -0.9,  0.9, -0.5,
+                          0.9, -0.9, -0.5,
+                          0.9,  0.9, -0.5 };
 
 void Background::init()
 {

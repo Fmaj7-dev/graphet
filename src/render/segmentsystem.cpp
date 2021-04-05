@@ -127,6 +127,8 @@ void SegmentSystem::init()
 
 void SegmentSystem::draw()
 {
+    if (getNumSegmentPoints() == 0)
+        return;
     
     glUseProgram(program_id);
     glBindBuffer( GL_ARRAY_BUFFER , geom_id );

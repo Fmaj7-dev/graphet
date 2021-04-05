@@ -1,11 +1,12 @@
 #include "graph.h"
-//#include "utils/log.h"
-#include <iostream>
+#include "utils/log.h"
 
 Graph::Graph(RenderManager* rm)
 : num_nodes_(0),
   dirty_(true),
-  rm_(rm)
+  rm_(rm),
+  ps_(nullptr),
+  ss_(nullptr)
 {
 
 }
@@ -54,12 +55,12 @@ size_t Graph::getNumLinks()const
 
 void Graph::initRandom()
 { 
-    for (int i=0; i < 100; ++i)
+    for (int i=0; i < 10; ++i)
     {
         Node n("", ((float) rand() / float(RAND_MAX)*2)-1, ((float) rand() / float(RAND_MAX)*2)-1);
         n.r = i*17 % 256;
         n.g = i*63 % 256;
-        n.b = i*13 % 256;
+        n.b = i*43 % 256;
         addNode(n);
 
         if (i>0)
@@ -83,7 +84,8 @@ void Graph::synchronizeBuffers()
     if (!dirty_)
         return;
 
-    if (ps_->getNumParticles() != getNumNodes())
+    if (ps_->getNumParticles() != getNumNodes() &&
+        ps_->getNumParticles() > 0)
     {
         ps_->recreateBuffers(getNumNodes());
     }
@@ -97,26 +99,32 @@ void Graph::synchronizeBuffers()
         particles[i++] = p;
     }
 
-    if(ss_->getNumSegmentPoints() != getNumLinks()*2)
+    if (ss_)
     {
-        ss_->recreateBuffers( getNumLinks() );
-    }
+        if( ss_->getNumSegmentPoints() != getNumLinks()*2 &&
+            ss_->getNumSegmentPoints() > 0)
+        {
+            etlog(std::to_string(getNumLinks()));
 
-    SegmentPoint* segmentPoints = ss_->getSegmentPoints();
-    int j = 0;
+            ss_->recreateBuffers( getNumLinks() );
+        }
 
-    for( auto&& link : links_ )
-    {
-        Node& a = nodes_[link.from];
-        Node& b = nodes_[link.to];
+        SegmentPoint* segmentPoints = ss_->getSegmentPoints();
+        int j = 0;
 
-        SegmentPoint pa(a.x, a.y, a.z, a.r, a.g, a.b);
-        SegmentPoint pb(b.x, b.y, b.z, b.r, b.g, b.b);
+        for( auto&& link : links_ )
+        {
+            Node& a = nodes_[link.from];
+            Node& b = nodes_[link.to];
 
-        segmentPoints[2*j] = pa;
-        segmentPoints[2*j+1] = pb;
+            SegmentPoint pa(a.x, a.y, a.z, a.r, a.g, a.b);
+            SegmentPoint pb(b.x, b.y, b.z, b.r, b.g, b.b);
 
-        ++j;
+            segmentPoints[2*j] = pa;
+            segmentPoints[2*j+1] = pb;
+
+            ++j;
+        }
     }
 
     dirty_ = false;

@@ -42,9 +42,9 @@ void RenderManager::init()
 {
     printInfo();
 
-    glClearColor(.2f, .1f, .1f, 1.f);
+    glClearColor(.2f, .2f, .3f, 1.f);
 
-    bg.init();
+    //bg.init();
 }
 
 ParticleSystem* RenderManager::addParticleSystem( size_t hint_nparticles )
@@ -63,15 +63,16 @@ void RenderManager::draw()
 {
     glViewport(0, 0, width_, height_);
     glClear(GL_COLOR_BUFFER_BIT);
-    //glDisable(GL_CULL_FACE);
-    
-    //glUniform1f(g_context.u_time_loc, glutGet(GLUT_ELAPSED_TIME) / 1000.f);
-    //glDrawArrays(GL_TRIANGLES, 0, 3);
+
+    /*glDisable(GL_CULL_FACE);
+    glEnable( GL_DEPTH_TEST );
+    glClear( GL_DEPTH_BUFFER_BIT );*/
 
     //bg.draw();
-    
+
     for (auto&& ss : segmentSystems_)
         ss.draw();
+
 
     for (auto&& ps : particleSystems_)
         ps.draw();
@@ -79,7 +80,7 @@ void RenderManager::draw()
     GLenum err;
     while((err = glGetError()) != GL_NO_ERROR)
     {
-        etlog("error detected");
+        etlog(std::string("error detected ")+std::to_string(err));
     }
 }
 
