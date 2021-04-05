@@ -1,0 +1,1 @@
+/Library/Developer/CommandLineTools/usr/bin/c++ /Users/enrique/projects/graphet/src/app/main_old.cpp  -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.14.sdk   -Wall -Wextra -pedantic -Werror -std=c++17 -Wc++11-extensions  -framework GLUT -framework OpenGl  -o build/test

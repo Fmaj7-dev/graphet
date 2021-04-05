@@ -1,6 +1,6 @@
 #define GL_GLEXT_PROTOTYPES
 
-#include "particlesystem.h"
+//#include "particlesystem.h"
 
 #include <cstdio>
 #include <cassert>
@@ -32,21 +32,21 @@ struct Context
 
 } g_context;
 
-/*struct Vertex { float x, y, z; unsigned char r, g, b, a; };
+struct Vertex { float x, y, z; unsigned char r, g, b, a; };
 Vertex vtcs[] {
    {  0.f,  .5f, 0.f,   255, 255, 255, 255 },
    { -.5f, -.5f, 0.f,   255, 255, 255, 255 },
    {  .5f, -.5f, 0.f,   255, 255, 255, 255 },
    {  .0f, .0f, 0.f,   255, 255, 255, 255 },
    {  .0f, .1f, 1.f,   255, 255, 255, 255 }
-};*/
+};
 
-ParticleSystem ps(2000);
+//ParticleSystem ps(2000);
 
 void init()
 {
    printf("init()\n");
-   ps.randInit();
+  // ps.randInit();
 
    glClearColor(.1f, .1f, .1f, 1.f);
 
@@ -99,20 +99,26 @@ void init()
     "    v_color = a_color;                  \n"
     "}                                       \n"
    );
+   
    printf("- vertex shader loaded\n");
 
    g_context.frag_id = load_shader(
     GL_FRAGMENT_SHADER,
     #ifdef __APPLE__
-    #else
-    "precision mediump float;                \n"
+    "#version 120\n"
     #endif
+    "#ifdef GL_ES                            \n"
+    "   precision mediump float;             \n"
+    "#endif                                  \n"
     "varying vec4 v_color;                   \n"
     "void main()                             \n"
     "{                                       \n"
-    "    gl_FragColor = v_color;             \n"
+    "   vec2 temp = gl_PointCoord - vec2(0.5);\n"
+    "   float f = dot(temp, temp);\n"
+    "   gl_FragColor = v_color;             \n"
+    " gl_FragColor.a = 1.0-f*5.0;"
     "}                                       \n"
-   );
+    );
    printf("- fragment shader loaded\n");
 
    g_context.prog_id = glCreateProgram();
@@ -140,14 +146,14 @@ void init()
    glGenBuffers(1, &g_context.geom_id);
    assert(g_context.geom_id);
    glBindBuffer(GL_ARRAY_BUFFER, g_context.geom_id);
-   //glBufferData(GL_ARRAY_BUFFER, sizeof(vtcs), vtcs, GL_DYNAMIC_DRAW);
-   glBufferData(GL_ARRAY_BUFFER, sizeof(Particle)*ps.getNumParticles(), ps.getParticles(), GL_DYNAMIC_DRAW);
+   glBufferData(GL_ARRAY_BUFFER, sizeof(vtcs), vtcs, GL_DYNAMIC_DRAW);
+   //glBufferData(GL_ARRAY_BUFFER, sizeof(Particle)*ps.getNumParticles(), ps.getParticles(), GL_DYNAMIC_DRAW);
    auto offset = [](size_t value) -> const GLvoid * { return reinterpret_cast<const GLvoid *>(value); };
-   //glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), offset(0));
-   glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), offset(0));
+   glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), offset(0));
+   //glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), offset(0));
    glEnableVertexAttribArray(Context::Position_loc);
-   //glVertexAttribPointer(Context::Color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), offset(3 * sizeof(float)));
-   glVertexAttribPointer(Context::Color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Particle), offset(3 * sizeof(float)));
+   glVertexAttribPointer(Context::Color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex), offset(3 * sizeof(float)));
+   //glVertexAttribPointer(Context::Color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Particle), offset(3 * sizeof(float)));
    glEnableVertexAttribArray(Context::Color_loc);
    printf("- geometry created & bound\n");
 }
@@ -169,25 +175,26 @@ void draw()
    //glDrawArrays(GL_TRIANGLES, 0, 3);
 
    glBindBuffer( GL_ARRAY_BUFFER , g_context.geom_id );
-	//glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(vtcs) , vtcs );
-   glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(Particle)*ps.getNumParticles() , ps.getParticles() );
+	glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(vtcs) , vtcs );
+   //glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(Particle)*ps.getNumParticles() , ps.getParticles() );
 
-   glDrawArrays(GL_POINTS, 0, ps.getNumParticles());
+   glDrawArrays(GL_POINTS, 0, sizeof(vtcs) );
+   //glDrawArrays(GL_POINTS, 0, ps.getNumParticles());
     
    glutSwapBuffers();
 }
 
 void update()
 {
-   //vtcs[0].x += 0.001f;
-   ps.getParticles()[0].position_[0] += 0.001f;
+   vtcs[0].x += 0.001f;
+   /*ps.getParticles()[0].position_[0] += 0.001f;
    ps.getParticles()[1].position_[0] += 0.01f;
    ps.getParticles()[2].position_[0] += 0.0001f;
    ps.getParticles()[3].position_[0] += 0.01f;
    ps.getParticles()[4].position_[0] += 0.001f;
    ps.getParticles()[5].position_[0] += 0.0001f;
    ps.getParticles()[6].position_[0] += 0.003f;
-   ps.getParticles()[7].position_[0] += 0.0003f;
+   ps.getParticles()[7].position_[0] += 0.0003f;*/
 
    glutPostRedisplay();   
 }
