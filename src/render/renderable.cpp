@@ -2,32 +2,32 @@
 #include "utils/log.h"
 
 #include <vector>
- #include <cassert>
+#include <cassert>
 
-GLint Renderable::LoadShader(GLenum type, const char *src)
+render::ETint Renderable::LoadShader(render::ETenum type, const char *src)
 {
-    const GLuint id = glCreateShader(type);
+    const render::ETuint id = render::CreateShader(type);
     assert(id);
-    glShaderSource(id, 1, &src, nullptr);
-    glCompileShader(id);
-    GLint compiled = 0;
-    glGetShaderiv(id, GL_COMPILE_STATUS, &compiled);
+    render::ShaderSource(id, 1, &src, nullptr);
+    render::CompileShader(id);
+    render::ETint compiled = 0;
+    render::GetShaderiv(id, ET_COMPILE_STATUS, &compiled);
     //assert(compiled);
     etlog(std::string("* compiled: ")+std::to_string(compiled));
     if(compiled == GL_FALSE)
     {
-        GLint maxLength = 0;
-        glGetShaderiv(id, GL_INFO_LOG_LENGTH, &maxLength);
+        render::ETint maxLength = 0;
+        render::GetShaderiv(id, ET_INFO_LOG_LENGTH, &maxLength);
 
         // The maxLength includes the NULL character
         std::vector<GLchar> errorLog(maxLength);
-        glGetShaderInfoLog(id, maxLength, &maxLength, &errorLog[0]);
+        render::GetShaderInfoLog(id, maxLength, &maxLength, &errorLog[0]);
         etlog(&errorLog[0]);
 
 
         // Provide the infolog in whatever manor you deem best.
         // Exit with failure.
-        glDeleteShader(id);
+        render::DeleteShader(id);
         return 0;
     }
     return id;

@@ -2,6 +2,14 @@
 #include "rendermanager.h"
 #include "utils/log.h"
 
+/*#ifdef __APPLE__
+   #define GL_SILENCE_DEPRECATION
+   #include <GLUT/glut.h>
+#else
+    #define GL_GLEXT_PROTOTYPES
+    #include <GL/glut.h>
+#endif*/
+
 #if defined (EMSCRIPTEN)
     #include <stdio.h>
     #include <cassert>
@@ -22,27 +30,14 @@ RenderManager::RenderManager(GLuint w, GLuint h)
 
 void RenderManager::printInfo()
 {
-    const GLubyte *renderer = glGetString( GL_RENDERER ); 
-    const GLubyte *vendor = glGetString( GL_VENDOR ); 
-    const GLubyte *version = glGetString( GL_VERSION ); 
-    const GLubyte *glslVersion = glGetString( GL_SHADING_LANGUAGE_VERSION ); 
-
-    /*GLint major, minor; 
-    glGetIntegerv(GL_MAJOR_VERSION, &major); 
-    glGetIntegerv(GL_MINOR_VERSION, &minor); */
-
-    printf("GL Vendor            : %s\n", vendor); 
-    printf("GL Renderer          : %s\n", renderer); 
-    printf("GL Version (string)  : %s\n", version); 
-    //printf("GL Version (integer) : %d.%d\n", major, minor); 
-    printf("GLSL Version         : %s\n", glslVersion);
+    render::printInfo();
 }
 
 void RenderManager::init()
 {
     printInfo();
 
-    glClearColor(.2f, .2f, .3f, 1.f);
+    render::ClearColor(.2f, .2f, .3f, 1.f);
 
     //bg.init();
 }
@@ -61,8 +56,8 @@ SegmentSystem* RenderManager::addSegmentSystem( size_t hint_nsegments)
 
 void RenderManager::draw()
 {
-    glViewport(0, 0, width_, height_);
-    glClear(GL_COLOR_BUFFER_BIT);
+    render::Viewport(0, 0, width_, height_);
+    render::Clear(ET_COLOR_BUFFER_BIT);
 
     /*glDisable(GL_CULL_FACE);
     glEnable( GL_DEPTH_TEST );

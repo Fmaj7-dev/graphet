@@ -4,19 +4,12 @@
 #include "particlesystem.h"
 #include "segmentsystem.h"
 #include "background.h"
-
-#ifdef __APPLE__
-   #define GL_SILENCE_DEPRECATION
-   #include <GLUT/glut.h>
-#else
-    #define GL_GLEXT_PROTOTYPES
-    #include <GL/glut.h>
-#endif
+#include "glwrapper.h"
 
 class RenderManager
 {
 public:
-    RenderManager(GLuint w, GLuint h);
+    RenderManager(render::ETuint w, render::ETuint h);
 
     void render();
 
@@ -32,7 +25,7 @@ public:
     SegmentSystem* addSegmentSystem(size_t hint_nsegments);
 
 private:
-    GLint LoadShader(GLenum type, const char *src);
+    render::ETint LoadShader(render::ETenum type, const char *src);
 
 private:
     
@@ -43,13 +36,13 @@ private:
     Background bg;
 
     
-    GLuint width_;
-    GLuint height_;
+    render::ETuint width_;
+    render::ETuint height_;
     
-    GLuint vertex_id;
-    GLuint fragment_id;
-    GLuint program_id;
-    GLuint geom_id;
+    render::ETuint vertex_id;
+    render::ETuint fragment_id;
+    render::ETuint program_id;
+    render::ETuint geom_id;
 };
 
 #endif

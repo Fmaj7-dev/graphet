@@ -8,6 +8,7 @@ rendermanager.cpp
 segmentsystem.cpp
 renderable.cpp
 background.cpp
+glwrapper.cpp
 )
 
 # we are making a library
