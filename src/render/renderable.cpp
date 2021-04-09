@@ -14,13 +14,13 @@ render::ETint Renderable::LoadShader(render::ETenum type, const char *src)
     render::GetShaderiv(id, ET_COMPILE_STATUS, &compiled);
     //assert(compiled);
     etlog(std::string("* compiled: ")+std::to_string(compiled));
-    if(compiled == GL_FALSE)
+    if(compiled == ET_FALSE)
     {
         render::ETint maxLength = 0;
         render::GetShaderiv(id, ET_INFO_LOG_LENGTH, &maxLength);
 
         // The maxLength includes the NULL character
-        std::vector<GLchar> errorLog(maxLength);
+        std::vector<render::ETchar> errorLog(maxLength);
         render::GetShaderInfoLog(id, maxLength, &maxLength, &errorLog[0]);
         etlog(&errorLog[0]);
 

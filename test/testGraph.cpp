@@ -3,6 +3,7 @@
 
 #include "graph/graph.h"
 #include "render/rendermanager.h"
+#include "ui/windowmanager.h"
 
 TEST_CASE("Graph")
 {
@@ -11,17 +12,16 @@ TEST_CASE("Graph")
     Node c("Carlsen");
     Node d("Dimitrov");
 
-    RenderManager rm (20, 20);
-    Graph g(&rm);
-    g.addNode(a);
-    g.addNode(b);
-    g.addNode(c);
-    g.addNode(d);
+    RenderManager rm ( 640, 480 );
+    Graph graph( &rm );
+    WindowManager wm (640, 480, &rm, &graph );
 
-    g.addLink(a, b);
-    g.addLink(b, c);
+    wm.init( 0, nullptr );
+    rm.init();
 
-    g.print();
+    graph.initRandom();
+    
+    graph.print();
 
     // test init size
     REQUIRE( 1 == 1 );

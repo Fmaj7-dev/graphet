@@ -3,11 +3,6 @@
 
 #include <cstdlib>
 #include <iostream>
-
-/*#if defined (EMSCRIPTEN)
-    #include <stdio.h>
-#endif */
-
 #include <cassert>
 
 ParticleSystem::ParticleSystem(size_t n)
@@ -38,29 +33,27 @@ void ParticleSystem::recreateBuffers(size_t n)
 {
     etlog(std::string("recreate particle buffers ")+std::to_string(n));
 
-    glUseProgram(program_id);
+    render::UseProgram(program_id);
 
     particles_ = std::vector<Particle>(n);
 
     //glGenBuffers(1, &geom_id);
     //assert(geom_id);
-    glBindBuffer(GL_ARRAY_BUFFER, geom_id);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Particle)*getNumParticles(), getParticles(), GL_DYNAMIC_DRAW);
+    render::BindBuffer(ET_ARRAY_BUFFER, geom_id);
+    render::BufferData(ET_ARRAY_BUFFER, sizeof(Particle)*getNumParticles(), getParticles(), ET_DYNAMIC_DRAW);
 
-    auto offset = [](size_t value) -> const GLvoid * { return reinterpret_cast<const GLvoid *>(value); };
+    auto offset = [](size_t value) -> const render::ETvoid * { return reinterpret_cast<const render::ETvoid *>(value); };
 
-    glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), offset(0));
-    glEnableVertexAttribArray(Context::Position_loc);
-    glVertexAttribPointer(Context::Color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Particle), offset(3 * sizeof(float)));
-    glEnableVertexAttribArray(Context::Color_loc);
+    render::VertexAttribPointer(Context::Position_loc, 3, ET_FLOAT, ET_FALSE, sizeof(Particle), offset(0));
+    render::EnableVertexAttribArray(Context::Position_loc);
+    render::VertexAttribPointer(Context::Color_loc, 4, ET_UNSIGNED_BYTE, ET_TRUE, sizeof(Particle), offset(3 * sizeof(float)));
+    render::EnableVertexAttribArray(Context::Color_loc);
 }
 
 void ParticleSystem::init()
 {
-    //randInitPositions();
-
     vertex_id = LoadShader(
-    GL_VERTEX_SHADER,
+    ET_VERTEX_SHADER,
     "attribute vec4 a_position;              \n"
     "attribute vec4 a_color;                 \n"
     "varying vec4 v_color;                   \n"
@@ -75,7 +68,7 @@ void ParticleSystem::init()
     );
 
     fragment_id = LoadShader(
-    GL_FRAGMENT_SHADER,
+    ET_FRAGMENT_SHADER,
     #ifdef __APPLE__
     "#version 120\n"
     #endif
@@ -93,49 +86,49 @@ void ParticleSystem::init()
     "}                                       \n"
     );
 
-    program_id = glCreateProgram();
+    program_id = render::CreateProgram();
     assert(program_id);
-    glAttachShader(program_id, vertex_id);
-    glAttachShader(program_id, fragment_id);
-    glBindAttribLocation(program_id, Context::Position_loc, "a_position");
-    glBindAttribLocation(program_id, Context::Color_loc, "a_color");
-    glLinkProgram(program_id);
-    GLint linked = 0;
-    glGetProgramiv(program_id, GL_LINK_STATUS, &linked);
+    render::AttachShader(program_id, vertex_id);
+    render::AttachShader(program_id, fragment_id);
+    render::BindAttribLocation(program_id, Context::Position_loc, "a_position");
+    render::BindAttribLocation(program_id, Context::Color_loc, "a_color");
+    render::LinkProgram(program_id);
+    render::ETint linked = 0;
+    render::GetProgramiv(program_id, ET_LINK_STATUS, &linked);
     assert(linked);
-    glUseProgram(program_id);
+    render::UseProgram(program_id);
    
     #ifdef __APPLE__
-        glPointSize(16.0f);
+        render::PointSize(16.0f);
     #else
-        glEnable(GL_PROGRAM_POINT_SIZE);
+        render::Enable(GL_PROGRAM_POINT_SIZE);
     #endif
 
     etlog("reserving buffer for "+std::to_string(getNumParticles())+std::string(" particles"));
 
-    glGenBuffers(1, &geom_id);
+    render::GenBuffers(1, &geom_id);
     assert(geom_id);
-    glBindBuffer(GL_ARRAY_BUFFER, geom_id);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Particle)*getNumParticles(), getParticles(), GL_DYNAMIC_DRAW);
-    auto offset = [](size_t value) -> const GLvoid * { return reinterpret_cast<const GLvoid *>(value); };
+    render::BindBuffer(ET_ARRAY_BUFFER, geom_id);
+    render::BufferData(ET_ARRAY_BUFFER, sizeof(Particle)*getNumParticles(), getParticles(), ET_DYNAMIC_DRAW);
+    auto offset = [](size_t value) -> const render::ETvoid * { return reinterpret_cast<const render::ETvoid *>(value); };
 
-    glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), offset(0));
-    glEnableVertexAttribArray(Context::Position_loc);
-    glVertexAttribPointer(Context::Color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Particle), offset(3 * sizeof(float)));
-    glEnableVertexAttribArray(Context::Color_loc);
+    render::VertexAttribPointer(Context::Position_loc, 3, ET_FLOAT, ET_FALSE, sizeof(Particle), offset(0));
+    render::EnableVertexAttribArray(Context::Position_loc);
+    render::VertexAttribPointer(Context::Color_loc, 4, ET_UNSIGNED_BYTE, ET_TRUE, sizeof(Particle), offset(3 * sizeof(float)));
+    render::EnableVertexAttribArray(Context::Color_loc);
 }
 
 void ParticleSystem::draw()
 {
     // alpha for soft circles
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    render::Enable(ET_BLEND);
+    render::BlendFunc(ET_SRC_ALPHA, ET_ONE_MINUS_SRC_ALPHA);
 
-    glUseProgram(program_id);
-    glBindBuffer( GL_ARRAY_BUFFER , geom_id );
-    glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(Particle)*getNumParticles() , getParticles() );
+    render::UseProgram(program_id);
+    render::BindBuffer( ET_ARRAY_BUFFER , geom_id );
+    render::BufferSubData( ET_ARRAY_BUFFER , 0 , sizeof(Particle)*getNumParticles() , getParticles() );
     
-    glDrawArrays(GL_POINTS, 0, getNumParticles());
+    render::DrawArrays(ET_POINTS, 0, getNumParticles());
 
-    glDisable(GL_BLEND);
+    render::Disable(ET_BLEND);
 }

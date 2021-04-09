@@ -65,8 +65,8 @@ void RenderManager::draw()
 
     //bg.draw();
 
-    for (auto&& ss : segmentSystems_)
-        ss.draw();
+    /*for (auto&& ss : segmentSystems_)
+        ss.draw();*/
 
 
     for (auto&& ps : particleSystems_)

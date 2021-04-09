@@ -36,7 +36,7 @@ void Graph::print()
 {
     std::cout<<"Nodes:"<<std::endl;
     for (auto& node: nodes_) 
-        std::cout<<node.id<<" "<<node.name<< std::endl;
+        std::cout<<node.id<<": "<<node.name<< node.x<<", "<<node.y<<", "<<node.z<<std::endl;
 
     std::cout<<"Links:"<<std::endl;
     for (auto& link: links_)
@@ -57,7 +57,7 @@ void Graph::initRandom()
 { 
     for (int i=0; i < 10; ++i)
     {
-        Node n("", ((float) rand() / float(RAND_MAX)*2)-1, ((float) rand() / float(RAND_MAX)*2)-1);
+        Node n("", ((float) rand() / (float(RAND_MAX)*1))-0.5f, ((float) rand() / (float(RAND_MAX)*1))-0.5f);
         n.r = i*17 % 256;
         n.g = i*63 % 256;
         n.b = i*43 % 256;
@@ -71,7 +71,7 @@ void Graph::initRandom()
     ss_ = rm_->addSegmentSystem( getNumLinks() );
 
     ps_->init();
-    ss_->init();
+    //ss_->init();
 
     synchronizeBuffers();
 

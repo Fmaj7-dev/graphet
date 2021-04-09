@@ -3,14 +3,15 @@
 #define PARTICLE_SYSTEM_H
 
 #include "renderable.h"
+#include "glwrapper.h"
 
-#ifdef __APPLE__
+/*x#ifdef __APPLE__
    #define GL_SILENCE_DEPRECATION
    #include <GLUT/glut.h>
 #else
     #define GL_GLEXT_PROTOTYPES
     #include <GL/glut.h>
-#endif
+#endif*/
 
 #include <vector>
 
@@ -55,10 +56,10 @@ public:
 private:
     class Context{ public: enum type{ Position_loc=0, Color_loc=1 }; };
 
-    GLuint vertex_id;
-    GLuint fragment_id;
-    GLuint program_id;
-    GLuint geom_id;
+    render::ETuint vertex_id;
+    render::ETuint fragment_id;
+    render::ETuint program_id;
+    render::ETuint geom_id;
 
 private:
     std::vector<Particle> particles_;
