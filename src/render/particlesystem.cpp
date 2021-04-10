@@ -101,7 +101,7 @@ void ParticleSystem::init()
     #ifdef __APPLE__
         render::PointSize(16.0f);
     #else
-        render::Enable(GL_PROGRAM_POINT_SIZE);
+        //render::Enable(GL_PROGRAM_POINT_SIZE);
     #endif
 
     etlog("reserving buffer for "+std::to_string(getNumParticles())+std::string(" particles"));

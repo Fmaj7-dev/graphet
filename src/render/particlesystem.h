@@ -5,13 +5,13 @@
 #include "renderable.h"
 #include "glwrapper.h"
 
-/*x#ifdef __APPLE__
+#ifdef __APPLE__
    #define GL_SILENCE_DEPRECATION
    #include <GLUT/glut.h>
 #else
     #define GL_GLEXT_PROTOTYPES
     #include <GL/glut.h>
-#endif*/
+#endif
 
 #include <vector>
 
