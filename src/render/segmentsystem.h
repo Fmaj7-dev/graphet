@@ -3,6 +3,7 @@
 #define SEGMENT_SYSTEM_H
 
 #include "renderable.h"
+#include "glwrapper.h"
 
 #ifdef __APPLE__
    #define GL_SILENCE_DEPRECATION
@@ -64,7 +65,7 @@ public:
     void recreateBuffers( size_t n );
 
 private:
-    class Context{ public: enum type{ Position_loc=0, Color_loc=1 }; };
+    class Context{ public: enum type{ Position_loc=3, Color_loc=4 }; };
 
     GLuint vertex_id;
     GLuint fragment_id;

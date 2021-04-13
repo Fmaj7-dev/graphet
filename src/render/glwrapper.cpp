@@ -10,6 +10,8 @@
 #endif
 
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 
 namespace render
 {
@@ -25,16 +27,16 @@ bool GetError(std::string from)
     return found;
 }
 
-void logFunction(std::string function)
+void logFunction(std::string text)
 {
-    etlog(function);
+    etlog(". "+text);
 }
 
 void UseProgram(GLuint program)
 {
     glUseProgram(program);
     GetError(__FUNCTION__);
-    logFunction(__FUNCTION__);
+    logFunction(__FUNCTION__+std::string(" ")+std::to_string(program));
 }
 
 const GLubyte* GetString (GLenum name)
@@ -75,7 +77,7 @@ void Viewport (ETint x, ETint y, ETsizei width, ETsizei height)
 {
     glViewport (x, y, width, height);
     GetError(__FUNCTION__);
-    logFunction(__FUNCTION__);
+    logFunction(std::string(__FUNCTION__) + " "+std::to_string(width)+ " "+std::to_string(height));
 }
 
 void Clear (GLbitfield mask)
@@ -89,7 +91,7 @@ ETuint CreateShader(ETenum type)
 {
     ETuint ret = glCreateShader (type);
     GetError(__FUNCTION__);
-    logFunction(__FUNCTION__);
+    logFunction(__FUNCTION__+std::string(" -> ")+std::to_string(ret));
     return ret;
 }
 
@@ -104,7 +106,7 @@ void CompileShader (ETuint shader)
 {
     glCompileShader (shader);
     GetError(__FUNCTION__);
-    logFunction(__FUNCTION__);
+    logFunction(__FUNCTION__ + std::string(" ") + std::to_string(shader));
 }
 
 void GetShaderiv (ETuint shader, ETenum pname, ETint *params)
@@ -132,35 +134,38 @@ void BindBuffer (render::ETenum target, render::ETuint buffer)
 {
     glBindBuffer(target, buffer);
     GetError(__FUNCTION__);
-    logFunction(__FUNCTION__);
+    logFunction(__FUNCTION__ + std::string(" target: ")+std::to_string(target)+std::string(" ")+std::to_string(buffer));
 }
 
 void BufferData (ETenum target, ETsizeiptr size, const ETvoid *data, ETenum usage)
 {
     glBufferData(target, size, data, usage);
     GetError(__FUNCTION__);
-    logFunction(__FUNCTION__);
+    std::stringstream stream;
+    stream << std::hex << (long int)data;
+    std::string result( stream.str() );
+    logFunction(__FUNCTION__+std::string(" size: ")+std::to_string(size) + std::string(" address: ") + result);
 }
 
 void VertexAttribPointer (ETuint index, ETint size, ETenum type, ETboolean normalized, ETsizei stride, const ETvoid *pointer)
 {
     glVertexAttribPointer (index, size, type, normalized, stride, pointer);
     GetError(__FUNCTION__);
-    logFunction(__FUNCTION__);
+    logFunction(__FUNCTION__+std::string(" index: ")+std::to_string(index) + std::string(" size: ") + std::to_string(size));
 }
 
 void EnableVertexAttribArray (GLuint index)
 {
     glEnableVertexAttribArray (index);
     GetError(__FUNCTION__);
-    logFunction(__FUNCTION__);
+    logFunction(__FUNCTION__+std::string(" index: ")+std::to_string(index));
 }
 
 ETuint CreateProgram (void)
 {
     ETuint ret = glCreateProgram();
     GetError(__FUNCTION__);
-    logFunction(__FUNCTION__);
+    logFunction(__FUNCTION__+std::string(" -> ")+std::to_string(ret));
     return ret;
 }
 
@@ -168,21 +173,21 @@ void AttachShader (ETuint program, ETuint shader)
 {
     glAttachShader (program, shader);
     GetError(__FUNCTION__);
-    logFunction(__FUNCTION__);
+    logFunction(__FUNCTION__ + std::string("program: ")+std::to_string(program)+std::string(" shader: ")+std::to_string(shader));
 }
 
 void BindAttribLocation (ETuint program, ETuint index, const ETchar *name)
 {
     glBindAttribLocation (program, index, name);
     GetError(__FUNCTION__);
-    logFunction(__FUNCTION__);
+    logFunction(__FUNCTION__+std::string(" ")+std::to_string(program)+ " "+std::to_string(index)+" "+std::string(name));
 }
 
 void LinkProgram (ETuint program)
 {
     glLinkProgram (program);
     GetError(__FUNCTION__);
-    logFunction(__FUNCTION__);
+    logFunction(__FUNCTION__ + std::string(" ") + std::to_string(program));
 }
 
 void GetProgramiv (ETuint program, ETenum pname, ETint *params)
@@ -212,7 +217,7 @@ void GenBuffers (ETsizei n, ETuint *buffers)
 {
     glGenBuffers (n, buffers);
     GetError(__FUNCTION__);
-    logFunction(__FUNCTION__);
+    logFunction(__FUNCTION__+std::string(" ")+std::to_string(*buffers));
 }
 
 void BlendFunc (ETenum sfactor, ETenum dfactor)
@@ -226,14 +231,17 @@ void BufferSubData (ETenum target, ETintptr offset, ETsizeiptr size, const ETvoi
 {
     glBufferSubData (target, offset, size, data);
     GetError(__FUNCTION__);
-    logFunction(__FUNCTION__);
+    std::stringstream stream;
+    stream << std::hex << (long int)data;
+    std::string result( stream.str() );
+    logFunction(__FUNCTION__+std::string(" size: ")+std::to_string(size) + std::string(" address: ") + result);
 }
 
 void DrawArrays (ETenum mode, ETint first, ETsizei count)
 {
     glDrawArrays (mode, first, count);
     GetError(__FUNCTION__);
-    logFunction(__FUNCTION__);
+    logFunction(__FUNCTION__+std::string(" count. ") + std::to_string(count));
 }
 
 void Disable (ETenum cap)
@@ -241,6 +249,11 @@ void Disable (ETenum cap)
     glDisable (cap);
     GetError(__FUNCTION__);
     logFunction(__FUNCTION__);
+}
+
+void LineWidth(float w)
+{
+    glLineWidth(w);
 }
 
 }

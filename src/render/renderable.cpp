@@ -12,8 +12,8 @@ render::ETint Renderable::LoadShader(render::ETenum type, const char *src)
     render::CompileShader(id);
     render::ETint compiled = 0;
     render::GetShaderiv(id, ET_COMPILE_STATUS, &compiled);
-    //assert(compiled);
-    etlog(std::string("* compiled: ")+std::to_string(compiled));
+    assert(compiled);
+    //etlog(std::string("* compiled: ")+std::to_string(compiled));
     if(compiled == ET_FALSE)
     {
         render::ETint maxLength = 0;
@@ -30,5 +30,6 @@ render::ETint Renderable::LoadShader(render::ETenum type, const char *src)
         render::DeleteShader(id);
         return 0;
     }
+    //etlog(std::string("* returning ")+std::to_string(id));
     return id;
 };

@@ -75,6 +75,7 @@ namespace render
     void BufferSubData (ETenum target, ETintptr offset, ETsizeiptr size, const ETvoid *data);
     void DrawArrays (ETenum mode, ETint first, ETsizei count);
     void Disable (ETenum cap);
+    void LineWidth(float w);
 
 }
 

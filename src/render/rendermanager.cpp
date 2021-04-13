@@ -16,9 +16,7 @@
 #endif 
 
 RenderManager::RenderManager(GLuint w, GLuint h)
-  : //ps( ParticleSystem(20) ),
-    //ss( SegmentSystem(10)),
-    width_(w),
+  : width_(w),
     height_(h),
     vertex_id(0),
     fragment_id(0),
@@ -35,6 +33,7 @@ void RenderManager::printInfo()
 
 void RenderManager::init()
 {
+    etlog("---- RenderManager::init");
     printInfo();
 
     render::ClearColor(.2f, .2f, .3f, 1.f);
@@ -56,6 +55,7 @@ SegmentSystem* RenderManager::addSegmentSystem( size_t hint_nsegments)
 
 void RenderManager::draw()
 {
+    etlog("---- RenderManager::draw START");
     render::Viewport(0, 0, width_, height_);
     render::Clear(ET_COLOR_BUFFER_BIT);
 
@@ -65,18 +65,15 @@ void RenderManager::draw()
 
     //bg.draw();
 
-    /*for (auto&& ss : segmentSystems_)
-        ss.draw();*/
-
-
     for (auto&& ps : particleSystems_)
         ps.draw();
 
-    GLenum err;
-    while((err = glGetError()) != GL_NO_ERROR)
-    {
-        etlog(std::string("error detected ")+std::to_string(err));
-    }
+    for (auto&& ss : segmentSystems_)
+        ss.draw();
+
+    
+
+    etlog("---- RenderManager::draw END");
 }
 
 void RenderManager::update()

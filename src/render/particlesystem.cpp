@@ -52,6 +52,7 @@ void ParticleSystem::recreateBuffers(size_t n)
 
 void ParticleSystem::init()
 {
+    etlog("---- ParticleSystem::init");
     vertex_id = LoadShader(
     ET_VERTEX_SHADER,
     "attribute vec4 a_position;              \n"
@@ -104,7 +105,7 @@ void ParticleSystem::init()
         //render::Enable(GL_PROGRAM_POINT_SIZE);
     #endif
 
-    etlog("reserving buffer for "+std::to_string(getNumParticles())+std::string(" particles"));
+    //etlog("reserving buffer for "+std::to_string(getNumParticles())+std::string(" particles"));
 
     render::GenBuffers(1, &geom_id);
     assert(geom_id);
@@ -127,6 +128,13 @@ void ParticleSystem::draw()
     render::UseProgram(program_id);
     render::BindBuffer( ET_ARRAY_BUFFER , geom_id );
     render::BufferSubData( ET_ARRAY_BUFFER , 0 , sizeof(Particle)*getNumParticles() , getParticles() );
+
+    /*std::cout<<"{";
+    for (int i = 0; i < 10; ++i)
+    {
+        std::cout<<"[x:"<<particles_[i].position_[0]<<", y:"<<particles_[i].position_[1]<<", z:"<<particles_[i].position_[2]<<"], ";
+    }
+    std::cout<<"}"<<std::endl;*/
     
     render::DrawArrays(ET_POINTS, 0, getNumParticles());
 

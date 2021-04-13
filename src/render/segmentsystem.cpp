@@ -71,6 +71,7 @@ void SegmentSystem::recreateBuffers(size_t n)
 void SegmentSystem::init()
 {
     //randInitPositions();
+    etlog("---- SegmentSystem::init");
 
     vertex_id = LoadShader(
     GL_VERTEX_SHADER,
@@ -99,30 +100,30 @@ void SegmentSystem::init()
     "}                                       \n"
     );
 
-    program_id = glCreateProgram();
+    program_id = render::CreateProgram();
     assert(program_id);
-    glAttachShader(program_id, vertex_id);
-    glAttachShader(program_id, fragment_id);
-    glBindAttribLocation(program_id, Context::Position_loc, "a_position");
-    glBindAttribLocation(program_id, Context::Color_loc, "a_color");
+    render::AttachShader(program_id, vertex_id);
+    render::AttachShader(program_id, fragment_id);
+    render::BindAttribLocation(program_id, Context::Position_loc, "a_position");
+    render::BindAttribLocation(program_id, Context::Color_loc, "a_color");
 
-    glLinkProgram(program_id);
+    render::LinkProgram(program_id);
     GLint linked = 0;
-    glGetProgramiv(program_id, GL_LINK_STATUS, &linked);
+    render::GetProgramiv(program_id, GL_LINK_STATUS, &linked);
     assert(linked);
     
     etlog("reserving buffer for "+std::to_string(getNumSegmentPoints())+std::string(" segmentpoints"));
     
-    glUseProgram(program_id);
-    glGenBuffers(1, &geom_id);
+    render::UseProgram(program_id);
+    render::GenBuffers(1, &geom_id);
     assert(geom_id);
-    glBindBuffer(GL_ARRAY_BUFFER, geom_id);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(SegmentPoint)*getNumSegmentPoints(), getSegmentPoints(), GL_DYNAMIC_DRAW);
+    render::BindBuffer(GL_ARRAY_BUFFER, geom_id);
+    render::BufferData(GL_ARRAY_BUFFER, sizeof(SegmentPoint)*getNumSegmentPoints(), getSegmentPoints(), GL_DYNAMIC_DRAW);
     auto offset = [](size_t value) -> const GLvoid * { return reinterpret_cast<const GLvoid *>(value); };
-    glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(SegmentPoint), offset(0));
-    glEnableVertexAttribArray(Context::Position_loc);
-    glVertexAttribPointer(Context::Color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SegmentPoint), offset(3 * sizeof(float)));
-    glEnableVertexAttribArray(Context::Color_loc);
+    render::VertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, GL_FALSE, sizeof(SegmentPoint), offset(0));
+    render::EnableVertexAttribArray(Context::Position_loc);
+    render::VertexAttribPointer(Context::Color_loc, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(SegmentPoint), offset(3 * sizeof(float)));
+    render::EnableVertexAttribArray(Context::Color_loc);
 }
 
 void SegmentSystem::draw()
@@ -130,10 +131,10 @@ void SegmentSystem::draw()
     if (getNumSegmentPoints() == 0)
         return;
     
-    glUseProgram(program_id);
-    glBindBuffer( GL_ARRAY_BUFFER , geom_id );
-    glBufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(SegmentPoint)*getNumSegmentPoints() , getSegmentPoints() );
-    glLineWidth(1.0); //FIXME: needed? YES
+    render::UseProgram(program_id);
+    render::BindBuffer( GL_ARRAY_BUFFER , geom_id );
+    render::BufferSubData( GL_ARRAY_BUFFER , 0 , sizeof(SegmentPoint)*getNumSegmentPoints() , getSegmentPoints() );
+    render::LineWidth(1.0); //FIXME: needed? YES
 
-    glDrawArrays(GL_LINES, 0, getNumSegmentPoints());
+    render::DrawArrays(GL_LINES, 0, getNumSegmentPoints());
 }
