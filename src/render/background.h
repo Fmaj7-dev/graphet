@@ -19,7 +19,7 @@ public:
     void draw();
 
 private:
-    class Context{ public: enum type{ Position_loc=0, Color_loc=1 }; };
+    class Context{ public: enum type{ Position_loc=9, Color_loc=10 }; };
 
     GLuint vertex_id;
     GLuint fragment_id;

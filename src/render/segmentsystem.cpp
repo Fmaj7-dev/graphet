@@ -108,6 +108,10 @@ void SegmentSystem::init()
     render::BindAttribLocation(program_id, Context::Color_loc, "a_color");
 
     render::LinkProgram(program_id);
+    
+    render::GetAttribLocation( program_id, "a_position" );
+    render::GetAttribLocation( program_id, "a_color" );
+
     GLint linked = 0;
     render::GetProgramiv(program_id, GL_LINK_STATUS, &linked);
     assert(linked);

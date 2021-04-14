@@ -76,6 +76,7 @@ namespace render
     void DrawArrays (ETenum mode, ETint first, ETsizei count);
     void Disable (ETenum cap);
     void LineWidth(float w);
+    ETint GetAttribLocation (ETuint program, const ETchar *name);
 
 }
 

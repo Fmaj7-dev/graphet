@@ -29,7 +29,8 @@ bool GetError(std::string from)
 
 void logFunction(std::string text)
 {
-    etlog(". "+text);
+    //etlog(". "+text);
+    text = text;
 }
 
 void UseProgram(GLuint program)
@@ -254,6 +255,17 @@ void Disable (ETenum cap)
 void LineWidth(float w)
 {
     glLineWidth(w);
+    GetError(__FUNCTION__);
+    logFunction(__FUNCTION__);
+}
+
+ETint GetAttribLocation (ETuint program, const ETchar *name)
+{
+    ETint ret = glGetAttribLocation(program, name);
+    GetError(__FUNCTION__);
+    logFunction(__FUNCTION__ + std::string(" ")+name+" " + std::to_string(ret));
+
+    return ret;
 }
 
 }

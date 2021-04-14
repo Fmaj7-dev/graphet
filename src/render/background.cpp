@@ -1,14 +1,16 @@
 #include "background.h"
+#include "utils/log.h"
 
 #include <cassert>
 
-GLfloat vVertices[] = {  -0.9, -0.9, -0.5,
-                         -0.9,  0.9, -0.5,
-                          0.9, -0.9, -0.5,
-                          0.9,  0.9, -0.5 };
+GLfloat vVertices[] = {  -1.0, -1.0, -0.5,
+                         -1.0,  1.0, -0.5,
+                          1.0, -1.0, -0.5,
+                          1.0,  1.0, -0.5 };
 
 void Background::init()
 {
+    etlog("---- Background::init");
     vertex_id = LoadShader(
     GL_VERTEX_SHADER,
     "attribute vec4 a_position;              \n"
@@ -26,45 +28,60 @@ void Background::init()
     "#ifdef GL_ES                            \n"
     "   precision mediump float;             \n"
     "#endif                                  \n"
-    "void main()                             \n"
+    /*"void main()                             \n"
     "{                                       \n"
-    "    gl_FragColor = vec4 ( 0.1, 0.1, 0.1, 0.5 );             \n"
-    "}                                       \n"
+    "    gl_FragColor = vec4 ( gl_FragCoord.x, 0.1, 0.1, 0.5 );             \n"
+    "}                                       \n"*/
+    "void main()                             \n"
+    "{"
+    "vec2 u_resolution=vec2(640,480);"
+    "vec2 st = gl_FragCoord.xy/u_resolution.xy;"
+    "vec3 color1 = vec3(0.0, 0.12, 0.23);"
+    "vec3 color2 = vec3(0.0, 0.08, 0.1);"
+    "float mixValue1 = distance(st,vec2(0.4,0.5));"
+    "float mixValue2 = distance(st,vec2(0.6,0.5));"
+    "float mixValue=min(mixValue1, mixValue2);"
+    "vec3 color = mix(color1, color2,  mixValue*3);"
+    "gl_FragColor = vec4(color,mixValue);"
+    "}"
     );
 
-    program_id = glCreateProgram();
+    program_id = render::CreateProgram();
     assert(program_id);
-    glAttachShader(program_id, vertex_id);
-    glAttachShader(program_id, fragment_id);
-    glBindAttribLocation(program_id, Context::Position_loc, "a_position");
+    render::AttachShader(program_id, vertex_id);
+    render::AttachShader(program_id, fragment_id);
+    render::BindAttribLocation(program_id, Context::Position_loc, "a_position");
     //glBindAttribLocation(program_id, Context::Color_loc, "a_color");
-    glLinkProgram(program_id);
+    render::LinkProgram(program_id);
+    
+    render::GetAttribLocation( program_id, "a_position" );
+
     GLint linked = 0;
-    glGetProgramiv(program_id, GL_LINK_STATUS, &linked);
+    render::GetProgramiv(program_id, GL_LINK_STATUS, &linked);
     assert(linked);
-    glUseProgram(program_id);
+    render::UseProgram(program_id);
    
-    #ifdef __APPLE__
-        glPointSize(16.0f);
+    /*#ifdef __APPLE__
+        render::PointSize(16.0f);
     #else
         glEnable(GL_PROGRAM_POINT_SIZE);
-    #endif
+    #endif*/
 
-    glGenBuffers(1, &geom_id);
+    render::GenBuffers(1, &geom_id);
     assert(geom_id);
-    glBindBuffer(GL_ARRAY_BUFFER, geom_id);
-    glBufferData(GL_ARRAY_BUFFER, 12*4, vVertices, GL_STATIC_DRAW);
+    render::BindBuffer(GL_ARRAY_BUFFER, geom_id);
+    render::BufferData(GL_ARRAY_BUFFER, 12*4, vVertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, 0, 0, 0);
-    glEnableVertexAttribArray(Context::Position_loc);
+    render::VertexAttribPointer(Context::Position_loc, 3, GL_FLOAT, 0, 0, 0);
+    render::EnableVertexAttribArray(Context::Position_loc);
 }
 
 void Background::draw()
 {
-    glUseProgram(program_id);
-    glBindBuffer( GL_ARRAY_BUFFER , geom_id );
-    glVertexAttribPointer(0 /* ? */, 3, GL_FLOAT, 0, 0, 0);
-    glEnableVertexAttribArray(0);
+    render::UseProgram(program_id);
+    render::BindBuffer( GL_ARRAY_BUFFER , geom_id );
+    //render::VertexAttribPointer(0 /* ? */, 3, GL_FLOAT, 0, 0, 0);
+    //render::EnableVertexAttribArray(0);
     
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    render::DrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }

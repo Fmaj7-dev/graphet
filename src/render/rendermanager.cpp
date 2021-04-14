@@ -38,7 +38,7 @@ void RenderManager::init()
 
     render::ClearColor(.2f, .2f, .3f, 1.f);
 
-    //bg.init();
+    bg.init();
 }
 
 ParticleSystem* RenderManager::addParticleSystem( size_t hint_nparticles )
@@ -63,7 +63,7 @@ void RenderManager::draw()
     glEnable( GL_DEPTH_TEST );
     glClear( GL_DEPTH_BUFFER_BIT );*/
 
-    //bg.draw();
+    bg.draw();
 
     for (auto&& ps : particleSystems_)
         ps.draw();

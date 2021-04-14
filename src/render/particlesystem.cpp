@@ -94,6 +94,10 @@ void ParticleSystem::init()
     render::BindAttribLocation(program_id, Context::Position_loc, "a_position");
     render::BindAttribLocation(program_id, Context::Color_loc, "a_color");
     render::LinkProgram(program_id);
+
+    render::GetAttribLocation( program_id, "a_position" );
+    render::GetAttribLocation( program_id, "a_color" );
+
     render::ETint linked = 0;
     render::GetProgramiv(program_id, ET_LINK_STATUS, &linked);
     assert(linked);
