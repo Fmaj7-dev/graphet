@@ -1,6 +1,5 @@
 
 #include "rendermanager.h"
-#include "utils/log.h"
 
 /*#ifdef __APPLE__
    #define GL_SILENCE_DEPRECATION
@@ -33,7 +32,6 @@ void RenderManager::printInfo()
 
 void RenderManager::init()
 {
-    etlog("---- RenderManager::init");
     printInfo();
 
     render::ClearColor(.2f, .2f, .3f, 1.f);
@@ -55,25 +53,27 @@ SegmentSystem* RenderManager::addSegmentSystem( size_t hint_nsegments)
 
 void RenderManager::draw()
 {
-    etlog("---- RenderManager::draw START");
     render::Viewport(0, 0, width_, height_);
     render::Clear(ET_COLOR_BUFFER_BIT);
 
-    /*glDisable(GL_CULL_FACE);
+    //glDisable(GL_CULL_FACE);
     glEnable( GL_DEPTH_TEST );
-    glClear( GL_DEPTH_BUFFER_BIT );*/
+    glClear( GL_DEPTH_BUFFER_BIT );
 
-    bg.draw();
+
+    
+bg.draw();
+
+    for (auto&& ss : segmentSystems_)
+        ss.draw();
+        
 
     for (auto&& ps : particleSystems_)
         ps.draw();
 
-    for (auto&& ss : segmentSystems_)
-        ss.draw();
+        
 
     
-
-    etlog("---- RenderManager::draw END");
 }
 
 void RenderManager::update()

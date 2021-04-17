@@ -46,6 +46,7 @@ public:
     void addNode( Node& node);
     void rmNode( size_t id );
     size_t getNumNodes() const;
+    std::vector<Node>& getNodes();
 
     // link operations
     void addLink( const Link& l );
@@ -61,7 +62,6 @@ public:
 private:
     void synchronizeBuffers();
 
-
     size_t num_nodes_;
 
     std::vector<Node> nodes_;
@@ -72,6 +72,8 @@ private:
     RenderManager* rm_;
     ParticleSystem* ps_;
     SegmentSystem* ss_;
+
+    class BaseLayout* layout_;
 };
 
 #endif

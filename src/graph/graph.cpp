@@ -1,12 +1,16 @@
 #include "graph.h"
 #include "utils/log.h"
 
+#include "testlayout.h"
+#include "forceatlaslayout.h"
+
 Graph::Graph(RenderManager* rm)
 : num_nodes_(0),
   dirty_(true),
   rm_(rm),
   ps_(nullptr),
-  ss_(nullptr)
+  ss_(nullptr),
+  layout_(new TestLayout(this))
 {
 
 }
@@ -48,6 +52,11 @@ size_t Graph::getNumNodes() const
     return nodes_.size();
 }
 
+std::vector<Node>& Graph::getNodes()
+{
+    return nodes_;
+}
+
 size_t Graph::getNumLinks()const
 {
     return links_.size();
@@ -55,10 +64,10 @@ size_t Graph::getNumLinks()const
 
 void Graph::initRandom()
 { 
-    for (int i=0; i < 10; ++i)
+    for (int i=0; i < 100; ++i)
     {
-        //Node n("", ((float) rand() / (float(RAND_MAX)*1))-0.5f, ((float) rand() / (float(RAND_MAX)*1))-0.5f);
-        Node n("", -0.5+i*0.1, -0.5+i*0.1);
+        Node n("", ((float) rand() / (float(RAND_MAX)*1))-0.5f, ((float) rand() / (float(RAND_MAX)*1))-0.5f);
+        //Node n("", -0.5+i*0.1, -0.5+i*0.1);
 
         if(i==0)
             n.r=n.g=n.b=(char)255;
@@ -140,21 +149,21 @@ void Graph::synchronizeBuffers()
 
 void Graph::update()
 {
-    etlog("------ Begin Graph::update()");
     /*Node n("", ((float) rand() / float(RAND_MAX)*2)-1, ((float) rand() / float(RAND_MAX)*2)-1);
     n.r=n.g=n.b= (char)125;
     addNode(n);
-
     addLink(n, nodes_[nodes_.size()-2]);*/
 
-    int i=0;
+    /*int i=0;
     for(auto&& n : nodes_)
     {
-        n.x += 0.00003 * ((i++)%5 - 2);
-        n.y += 0.00003 * ((i++)%7 - 3.5);
+        n.x += 0.00001 * ((i++)%5 - 2);
+        n.y += 0.00001 * ((i++)%7 - 3.5);
     }
         
-    dirty_ = true;
+    dirty_ = true;*/
+
+    dirty_ = layout_->stepLayout();
 
     synchronizeBuffers();
 }
