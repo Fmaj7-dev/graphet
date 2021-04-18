@@ -71,8 +71,6 @@ void SegmentSystem::recreateBuffers(size_t n)
 void SegmentSystem::init()
 {
     //randInitPositions();
-    etlog("---- SegmentSystem::init");
-
     vertex_id = LoadShader(
     GL_VERTEX_SHADER,
     "attribute vec4 a_position;              \n"

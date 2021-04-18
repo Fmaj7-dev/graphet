@@ -10,7 +10,8 @@ Graph::Graph(RenderManager* rm)
   rm_(rm),
   ps_(nullptr),
   ss_(nullptr),
-  layout_(new TestLayout(this))
+  //layout_(new TestLayout(this))
+  layout_(new ForceAtlasLayout(this))
 {
 
 }
@@ -57,6 +58,11 @@ std::vector<Node>& Graph::getNodes()
     return nodes_;
 }
 
+std::vector<Link>& Graph::getLinks()
+{
+    return links_;
+}
+
 size_t Graph::getNumLinks()const
 {
     return links_.size();
@@ -64,10 +70,10 @@ size_t Graph::getNumLinks()const
 
 void Graph::initRandom()
 { 
-    for (int i=0; i < 100; ++i)
+    #if 1
+    for (int i=0; i < 50; ++i)
     {
         Node n("", ((float) rand() / (float(RAND_MAX)*1))-0.5f, ((float) rand() / (float(RAND_MAX)*1))-0.5f);
-        //Node n("", -0.5+i*0.1, -0.5+i*0.1);
 
         if(i==0)
             n.r=n.g=n.b=(char)255;
@@ -83,6 +89,25 @@ void Graph::initRandom()
         if (i>0)
             addLink(n, nodes_[i-1]);
     }
+    #else
+
+    Node a("", ((float) rand() / (float(RAND_MAX)*1))-0.5f, ((float) rand() / (float(RAND_MAX)*1))-0.5f);
+    Node b("", ((float) rand() / (float(RAND_MAX)*1))-0.5f, ((float) rand() / (float(RAND_MAX)*1))-0.5f);
+    Node c("", ((float) rand() / (float(RAND_MAX)*1))-0.5f, ((float) rand() / (float(RAND_MAX)*1))-0.5f);
+    Node d("", ((float) rand() / (float(RAND_MAX)*1))-0.5f, ((float) rand() / (float(RAND_MAX)*1))-0.5f);
+    Node e("", ((float) rand() / (float(RAND_MAX)*1))-0.5f, ((float) rand() / (float(RAND_MAX)*1))-0.5f);
+    
+    addNode(a);
+    addNode(b);
+    addNode(c);
+    addNode(d);
+    addNode(e);
+
+    addLink(a, b);
+    addLink(a, c);
+    addLink(a, d);
+    addLink(e, d);
+    #endif
 
     ps_ = rm_->addParticleSystem( getNumNodes() );
     ss_ = rm_->addSegmentSystem( getNumLinks() );

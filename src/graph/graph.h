@@ -44,7 +44,7 @@ public:
 
     // node operations
     void addNode( Node& node);
-    void rmNode( size_t id );
+    //void rmNode( size_t id );
     size_t getNumNodes() const;
     std::vector<Node>& getNodes();
 
@@ -52,6 +52,7 @@ public:
     void addLink( const Link& l );
     void addLink( const Node& a, const Node& b, float force = 1.0f );
     size_t getNumLinks() const;
+    std::vector<Link>& getLinks();
 
     void update();
 

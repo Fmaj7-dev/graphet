@@ -52,7 +52,6 @@ void ParticleSystem::recreateBuffers(size_t n)
 
 void ParticleSystem::init()
 {
-    etlog("---- ParticleSystem::init");
     vertex_id = LoadShader(
     ET_VERTEX_SHADER,
     "attribute vec4 a_position;              \n"

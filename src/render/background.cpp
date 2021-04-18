@@ -1,5 +1,4 @@
 #include "background.h"
-#include "utils/log.h"
 
 #include <cassert>
 
@@ -10,7 +9,6 @@ GLfloat vVertices[] = {  -1.0, -1.0, -0.5,
 
 void Background::init()
 {
-    etlog("---- Background::init");
     vertex_id = LoadShader(
     GL_VERTEX_SHADER,
     "attribute vec4 a_position;              \n"

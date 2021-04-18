@@ -22,6 +22,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # tell cmake to search for more CMakeLists.txt files in these folders
 add_subdirectory(src/render)
+add_subdirectory(src/math)
 add_subdirectory(src/graph)
 add_subdirectory(src/ui)
 add_subdirectory(test)
@@ -30,7 +31,7 @@ add_subdirectory(test)
 add_executable(graphet src/app/main.cpp)
 
 # tell cmake to include these libraries in the linking
-target_link_libraries(graphet graph render ui "-framework GLUT -framework OpenGl")
+target_link_libraries(graphet graph render ui math "-framework GLUT -framework OpenGl")
 
 #link_directories(/usr/local/mysql/lib)
 
