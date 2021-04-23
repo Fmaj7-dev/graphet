@@ -39,7 +39,7 @@ void Background::init()
     "float mixValue1 = distance(st,vec2(0.4,0.5));"
     "float mixValue2 = distance(st,vec2(0.6,0.5));"
     "float mixValue=min(mixValue1, mixValue2);"
-    "vec3 color = mix(color1, color2,  mixValue*3);"
+    "vec3 color = mix(color1, color2,  mixValue*3.0);"
     "gl_FragColor = vec4(color,mixValue);"
     "}"
     );
