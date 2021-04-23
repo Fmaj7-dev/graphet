@@ -7,6 +7,8 @@ emcc -I./src  src/render/rendermanager.cpp -c -o build/rendermanager.o &
 emcc -I./src  src/render/glwrapper.cpp -c -o build/glwrapper.o &
 emcc -I./src  src/ui/windowmanager.cpp -c -o build/windowmanager.o &
 emcc -I./src  src/graph/graph.cpp -c -o build/graph.o &
-emcc -I./src  src/graph/testlayout.cpp -c -o build/testlayout.o &
-emcc -I./src  src/graph/forceatlaslayout.cpp -c -o build/forceatlaslayout.o &
-emcc build/main.o build/segmentsystem.o build/particlesystem.o build/background.o build/renderable.o build/rendermanager.o build/glwrapper.o build/windowmanager.o build/graph.o -o build/app.html
+emcc -I./src -I./external/glm  src/graph/testlayout.cpp -c -o build/testlayout.o &
+emcc -I./src  -I./external/glm src/graph/forceatlaslayout.cpp -c -o build/forceatlaslayout.o &
+emcc -I./src  -I./external/glm src/math/symmetric_matrix.cpp -c -o build/symmetric_matrix.o &
+
+emcc build/main.o build/segmentsystem.o build/particlesystem.o build/background.o build/renderable.o build/rendermanager.o build/glwrapper.o build/windowmanager.o build/graph.o build/forceatlaslayout.o build/testlayout.o build/symmetric_matrix.o -o build/app.html
