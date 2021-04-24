@@ -61,6 +61,8 @@ void WindowManager::resize(int w, int h)
 {
     width_ = w;
     height_ = h;
+
+    rm_->resize(w, h);
 }
 
 void WindowManager::draw()
@@ -121,7 +123,9 @@ void WindowManager::init(int argc, char *argv[])
     glutMotionFunc( motion_global );
     glutSpecialFunc( special_global );
 
-    glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
+    #ifdef __APPLE__
+        glutSetKeyRepeat(GLUT_KEY_REPEAT_OFF);
+    #endif
 }
 
 void WindowManager::mainLoop()

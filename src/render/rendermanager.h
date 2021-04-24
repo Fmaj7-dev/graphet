@@ -11,6 +11,8 @@ class RenderManager
 public:
     RenderManager(render::ETuint w, render::ETuint h);
 
+    void resize(render::ETuint w, render::ETuint h);
+
     void render();
 
     void draw();
