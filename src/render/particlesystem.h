@@ -52,6 +52,8 @@ public:
     void init();
     void draw();
     void recreateBuffers( size_t n );
+    void setViewMatrixPtr( float* );
+    void setProjectionMatrixPtr( float* );
 
 private:
     class Context{ public: enum type{ Position_loc=0, Color_loc=1 }; };

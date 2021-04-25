@@ -1,6 +1,8 @@
 #include "particlesystem.h"
 #include "utils/log.h"
 
+
+
 #include <cstdlib>
 #include <iostream>
 #include <cassert>
@@ -57,9 +59,13 @@ void ParticleSystem::init()
     "attribute vec4 a_position;              \n"
     "attribute vec4 a_color;                 \n"
     "varying vec4 v_color;                   \n"
+    //"uniform mat4 model;                     \n"
+    "uniform mat4 view;                      \n"
+    "uniform mat4 projection;                \n"
     "void main()                             \n"
     "{                                       \n"
-    "    gl_Position = a_position;           \n"
+    //"    gl_Position = a_position;           \n"
+    "   gl_Position = projection * view * a_position;\n"
     "#ifdef GL_ES                            \n"
     "    gl_PointSize = 16.0;                \n"
     "#endif                                  \n"
@@ -138,8 +144,46 @@ void ParticleSystem::draw()
         std::cout<<"[x:"<<particles_[i].position_[0]<<", y:"<<particles_[i].position_[1]<<", z:"<<particles_[i].position_[2]<<"], ";
     }
     std::cout<<"}"<<std::endl;*/
+
+/*{
+
+    static float time = 0.0f;
+
+    // projection
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f), 640.0f / 480.0f, 0.1f, 100.0f);
+    int projectionLoc = glGetUniformLocation(program_id, "projection");
+    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+    // view
+    glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+    float radius = 1.0f;
+    float camX   = sin(time) * radius;
+    float camZ   = cos(time) * radius;
+    view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+    int viewlLoc = glGetUniformLocation(program_id, "view");
+    glUniformMatrix4fv(viewlLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+    time += 0.001f;
+}*/
     
     render::DrawArrays(ET_POINTS, 0, getNumParticles());
 
     render::Disable(ET_BLEND);
+}
+
+void ParticleSystem::setViewMatrixPtr( float* view_ptr )
+{
+    render::UseProgram(program_id);
+    
+    int viewLoc = glGetUniformLocation(program_id, "view");
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view_ptr );
+}
+
+void ParticleSystem::setProjectionMatrixPtr( float* projection_ptr )
+{
+    render::UseProgram(program_id);
+
+    int projLoc = glGetUniformLocation(program_id, "projection");
+    glUniformMatrix4fv(projLoc, 1, GL_FALSE, projection_ptr );
 }

@@ -72,19 +72,22 @@ void SegmentSystem::init()
 {
     //randInitPositions();
     vertex_id = LoadShader(
-    GL_VERTEX_SHADER,
+    ET_VERTEX_SHADER,
     "attribute vec4 a_position;              \n"
     "attribute vec4 a_color;                 \n"
     "varying vec4 v_color;                   \n"
+    "uniform mat4 view2;                      \n"
+    "uniform mat4 projection2;                \n"
     "void main()                             \n"
     "{                                       \n"
-    "    gl_Position = a_position;           \n"
+    //"    gl_Position = a_position;           \n"
+    "   gl_Position = projection2 * view2 * a_position;\n"
     "    v_color = a_color;                  \n"
     "}                                       \n"
     );
 
     fragment_id = LoadShader(
-    GL_FRAGMENT_SHADER,
+    ET_FRAGMENT_SHADER,
     #ifdef __APPLE__
     "#version 120\n"
     #endif
@@ -139,4 +142,20 @@ void SegmentSystem::draw()
     render::LineWidth(1.0); //FIXME: needed? YES
 
     render::DrawArrays(GL_LINES, 0, getNumSegmentPoints());
+}
+
+void SegmentSystem::setViewMatrixPtr( float* view_ptr )
+{
+    render::UseProgram(program_id);
+    
+    int viewLoc = glGetUniformLocation(program_id, "view2");
+    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view_ptr );
+}
+
+void SegmentSystem::setProjectionMatrixPtr( float* projection_ptr )
+{
+    render::UseProgram(program_id);
+    
+    int projlLoc = glGetUniformLocation(program_id, "projection2");
+    glUniformMatrix4fv(projlLoc, 1, GL_FALSE, projection_ptr );
 }

@@ -1,9 +1,13 @@
 
 #include "rendermanager.h"
 
+#include "camera.h"
+
 #include <glm/glm.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/ext/matrix_transform.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #if defined (EMSCRIPTEN)
     #include <stdio.h>
@@ -20,7 +24,9 @@ RenderManager::RenderManager(GLuint w, GLuint h)
     program_id(0),
     geom_id(0)
 {
-    
+    const float near = 0.1f;
+    const float far = 100.0f;
+    camera_ = std::unique_ptr< Camera > ( new Camera( 45, width_, height_, near, far ) );
 }
 
 void RenderManager::resize(render::ETuint w, render::ETuint h)
@@ -64,23 +70,31 @@ void RenderManager::draw()
     glEnable( GL_DEPTH_TEST );
     glClear( GL_DEPTH_BUFFER_BIT );
 
-    /*glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f); 
-    glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-    glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
-    glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f); 
-    glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
-    glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);*/
+{
 
-    glm::mat4 view;
-    view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), 
-                       glm::vec3(0.0f, 0.0f, 0.0f), 
-                       glm::vec3(0.0f, 1.0f, 0.0f));
+    static float time = 0.0f;
 
-    static float v = 0.0f;
-    glLoadIdentity();
-    gluLookAt(	0, v, 0,
-                0, 0, 1 ,
-                0.0f, 10.0f,  0.0f);
+    for (auto&& ps : particleSystems_)
+        ps.setProjectionMatrixPtr( camera_->getProjectionPtr() );
+
+    for (auto&& ss : segmentSystems_)
+        ss.setProjectionMatrixPtr( camera_->getProjectionPtr() );
+
+    // view
+    glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+    float radius = 1.0f;
+    float camX   = sin(time) * radius;
+    float camZ   = cos(time) * radius;
+    view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+    for (auto&& ps : particleSystems_)
+        ps.setViewMatrixPtr( glm::value_ptr(view) );
+
+    for (auto&& ss : segmentSystems_)
+        ss.setViewMatrixPtr( glm::value_ptr(view) );
+
+    time += 0.001f;
+}
 
     bg.draw();
 

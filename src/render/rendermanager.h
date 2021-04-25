@@ -5,6 +5,8 @@
 #include "segmentsystem.h"
 #include "background.h"
 #include "glwrapper.h"
+#include "camera.h"
+
 
 class RenderManager
 {
@@ -30,13 +32,13 @@ private:
     render::ETint LoadShader(render::ETenum type, const char *src);
 
 private:
-    
+
+    std::unique_ptr<Camera> camera_;    
 
     std::vector<ParticleSystem> particleSystems_;
     std::vector<SegmentSystem> segmentSystems_;
 
     Background bg;
-
     
     render::ETuint width_;
     render::ETuint height_;

@@ -2,6 +2,7 @@
 #include "catch.hpp"
 
 #include "graph/graph.h"
+#include "render/camera.h"
 #include "render/rendermanager.h"
 #include "ui/windowmanager.h"
 

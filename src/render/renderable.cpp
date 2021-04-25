@@ -12,7 +12,7 @@ render::ETint Renderable::LoadShader(render::ETenum type, const char *src)
     render::CompileShader(id);
     render::ETint compiled = 0;
     render::GetShaderiv(id, ET_COMPILE_STATUS, &compiled);
-    assert(compiled);
+    //assert(compiled);
     //etlog(std::string("* compiled: ")+std::to_string(compiled));
     if(compiled == ET_FALSE)
     {

@@ -18,7 +18,8 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/build/bin)
 
 # include directories
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src )
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/external/glm/)
 
 # tell cmake to search for more CMakeLists.txt files in these folders
 add_subdirectory(src/render)

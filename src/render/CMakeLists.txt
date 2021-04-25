@@ -9,6 +9,7 @@ segmentsystem.cpp
 renderable.cpp
 background.cpp
 glwrapper.cpp
+camera.cpp
 )
 
 # we are making a library

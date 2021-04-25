@@ -73,7 +73,9 @@ void Graph::initRandom()
     #if 1
     for (int i=0; i < 50; ++i)
     {
-        Node n("", ((float) rand() / (float(RAND_MAX)*1))-0.5f, ((float) rand() / (float(RAND_MAX)*1))-0.5f);
+        Node n("", ((float) rand() / (float(RAND_MAX)*1))-0.5f, 
+                   ((float) rand() / (float(RAND_MAX)*1))-0.5f,
+                   ((float) rand() / (float(RAND_MAX)*1))-0.5f);
 
         if(i==0)
             n.r=n.g=n.b=(char)255;

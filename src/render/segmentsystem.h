@@ -63,6 +63,8 @@ public:
     //GLint LoadShader( GLenum type, const char *src );
     void draw();
     void recreateBuffers( size_t n );
+    void setViewMatrixPtr( float* );
+    void setProjectionMatrixPtr( float* );
 
 private:
     class Context{ public: enum type{ Position_loc=3, Color_loc=4 }; };

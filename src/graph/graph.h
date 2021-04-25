@@ -11,8 +11,8 @@
 class Node
 {
 public:
-    Node(std::string n, float xc = 0.0f, float yc = 0.0f )
-    : name(n), x(xc), y(yc), z(0)
+    Node(std::string n, float xc = 0.0f, float yc = 0.0f, float zc = 0.0f )
+    : name(n), x(xc), y(yc), z(zc)
     {}
 
     size_t id;
