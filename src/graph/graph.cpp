@@ -90,6 +90,9 @@ void Graph::initRandom()
 
         if (i>0)
             addLink(n, nodes_[i-1]);
+        /*if (i%5 == 0 && i > 0)
+            addLink(n, nodes_[0]);*/
+        
     }
     #else
 

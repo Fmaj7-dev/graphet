@@ -18,6 +18,7 @@ public:
     void rotate(float);
 
     float* getProjectionPtr();
+    float* getViewPtr();
 
 private:
     float fov_;
@@ -30,7 +31,8 @@ private:
     glm::vec3 lookAt_;
     glm::vec3 up_;
 
-    glm::mat4 projection;
+    glm::mat4 projection_;
+    glm::mat4 view_;
 };
 
 #endif

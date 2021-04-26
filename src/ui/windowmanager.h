@@ -35,6 +35,9 @@ private:
 
     int width_;
     int height_;
+
+    bool keys[256];
+    bool buttons[3];
 };
 
 #endif

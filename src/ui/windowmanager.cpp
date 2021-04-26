@@ -55,6 +55,8 @@ WindowManager::WindowManager(int w, int h, RenderManager* rm, Graph* graph)
   height_(h)
 {
     wm = this;
+    memset(keys, 0, 256);
+    memset(buttons, 0, 3);
 }
 
 void WindowManager::resize(int w, int h)
@@ -83,11 +85,13 @@ void WindowManager::update()
 
 void WindowManager::keyboard(unsigned char key, int x, int y)
 {
+    keys[key] = true;
     std::cout<<"down "<<key<<" "<<x<<" "<<y<<std::endl;
 }
 
 void WindowManager::keyboardUp(unsigned char key, int x, int y)
 {
+    keys[key] = true;
     std::cout<<"up "<<key<<" "<<x<<" "<<y<<std::endl;
 }
 

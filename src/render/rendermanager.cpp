@@ -70,31 +70,18 @@ void RenderManager::draw()
     glEnable( GL_DEPTH_TEST );
     glClear( GL_DEPTH_BUFFER_BIT );
 
-{
-
-    static float time = 0.0f;
-
+    // set view & projection matrices
     for (auto&& ps : particleSystems_)
+    {
         ps.setProjectionMatrixPtr( camera_->getProjectionPtr() );
+        ps.setViewMatrixPtr( camera_->getViewPtr() );
+    }
 
     for (auto&& ss : segmentSystems_)
+    {
         ss.setProjectionMatrixPtr( camera_->getProjectionPtr() );
-
-    // view
-    glm::mat4 view = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-    float radius = 1.0f;
-    float camX   = sin(time) * radius;
-    float camZ   = cos(time) * radius;
-    view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-    for (auto&& ps : particleSystems_)
-        ps.setViewMatrixPtr( glm::value_ptr(view) );
-
-    for (auto&& ss : segmentSystems_)
-        ss.setViewMatrixPtr( glm::value_ptr(view) );
-
-    time += 0.001f;
-}
+        ss.setViewMatrixPtr( camera_->getViewPtr() );
+    }
 
     bg.draw();
 
