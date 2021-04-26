@@ -1,6 +1,5 @@
 
 #include "rendermanager.h"
-
 #include "camera.h"
 
 #include <glm/glm.hpp>
@@ -95,4 +94,24 @@ void RenderManager::draw()
 void RenderManager::update()
 {
 
+}
+
+void RenderManager::moveForward()
+{
+    camera_->moveForward( 0.001f );
+}
+
+void RenderManager::moveBackward()
+{
+    camera_->moveBackward( 0.001f );
+}
+
+void RenderManager::moveLeft()
+{
+    camera_->moveLeft( 0.001f );
+}
+
+void RenderManager::moveRight()
+{
+    camera_->moveRight( 0.001f );
 }

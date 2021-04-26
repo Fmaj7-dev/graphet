@@ -25,6 +25,12 @@ public:
 
     void printInfo();
 
+    void moveForward();
+    void moveBackward();
+    void moveLeft();
+    void moveRight();
+
+
     ParticleSystem* addParticleSystem(size_t hint_nparticles);
     SegmentSystem* addSegmentSystem(size_t hint_nsegments);
 

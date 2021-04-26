@@ -14,7 +14,11 @@ public:
     Camera() = default;
     Camera(float fov, size_t width, size_t height, float near, float far);
 
-    void moveForward(float);
+    void moveForward( float );
+    void moveBackward( float );
+    void moveLeft( float );
+    void moveRight( float );
+
     void rotate(float);
 
     float* getProjectionPtr();
@@ -28,7 +32,7 @@ private:
     float far_;
     
     glm::vec3 position_;
-    glm::vec3 lookAt_;
+    glm::vec3 front_;
     glm::vec3 up_;
 
     glm::mat4 projection_;

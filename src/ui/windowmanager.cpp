@@ -77,6 +77,16 @@ void WindowManager::draw()
 
 void WindowManager::update()
 {
+    if (keys[(unsigned char)'w'])
+        rm_->moveForward();
+    else if (keys[(unsigned char)'s'])
+        rm_->moveBackward();
+    else if (keys[(unsigned char)'a'])
+        rm_->moveLeft();
+    else if (keys[(unsigned char)'d'])
+        rm_->moveRight();
+
+
     rm_->update();
     graph_->update();
     
@@ -91,23 +101,23 @@ void WindowManager::keyboard(unsigned char key, int x, int y)
 
 void WindowManager::keyboardUp(unsigned char key, int x, int y)
 {
-    keys[key] = true;
+    keys[key] = false;
     std::cout<<"up "<<key<<" "<<x<<" "<<y<<std::endl;
 }
 
 void WindowManager::mouse(int button, int state, int x, int y)
 {
-    std::cout<<button<<" "<<state<<" "<<x<<" "<<y<<std::endl;
+    std::cout<<"mouse "<<button<<" "<<state<<" "<<x<<" "<<y<<std::endl;
 }
 
 void WindowManager::motion(int x, int y)
 {
-    std::cout<<x<<" "<<y<<std::endl;
+    std::cout<<"motion "<<x<<" "<<y<<std::endl;
 }
 
 void WindowManager::special(int key, int x, int y)
 {
-    std::cout<<key<<" "<<x<<" "<<y<<std::endl;
+    std::cout<<"special "<<key<<" "<<x<<" "<<y<<std::endl;
 }
 
 void WindowManager::init(int argc, char *argv[])
