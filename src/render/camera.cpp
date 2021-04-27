@@ -8,7 +8,9 @@ Camera::Camera(float fov, size_t width, size_t height, float near, float far)
    far_(far),
    position_( glm::vec3(0.0f, 0.0f, 3.0f) ),
    front_( glm::vec3(0.0f, 0.0f, -1.0f) ),
-   up_( glm::vec3(0.0f, 1.0f, 0.0f) )
+   up_( glm::vec3(0.0f, 1.0f, 0.0f) ),
+   yaw_(-90.0f),
+   pitch_(0.0f)
 {
     /*direction_ = glm::normalize( position_ - target_ );
     glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f); 
@@ -16,7 +18,7 @@ Camera::Camera(float fov, size_t width, size_t height, float near, float far)
 
     up_ = glm::cross( direction_, right );*/
 
-    projection_ = glm::perspective( glm::radians(fov), (float)width_ / (float)height_, near, far );
+    projection_ = glm::perspective( glm::radians(fov_), (float)width_ / (float)height_, near_, far_ );
 }
 
 float* Camera::getProjectionPtr()
@@ -60,4 +62,21 @@ void Camera::moveLeft(float speed)
 void Camera::moveRight(float speed)
 {
     position_ += glm::normalize(glm::cross(front_, up_)) * speed;
+}
+
+void Camera::rotate( float pitch, float yaw )
+{
+    pitch_ += pitch;
+    yaw_ += yaw;
+
+    if( pitch_ > 89.0f )
+        pitch_ =  89.0f;
+    if( pitch_ < -89.0f )
+        pitch_ = -89.0f;
+
+    glm::vec3 direction;
+    direction.x = cos(glm::radians(yaw_)) * cos(glm::radians(pitch_));
+    direction.y = sin(glm::radians(pitch_));
+    direction.z = sin(glm::radians(yaw_)) * cos(glm::radians(pitch_));
+    front_ = glm::normalize(direction);
 }

@@ -19,7 +19,7 @@ public:
     void moveLeft( float );
     void moveRight( float );
 
-    void rotate(float);
+    void rotate( float pitch, float yaw );
 
     float* getProjectionPtr();
     float* getViewPtr();
@@ -37,6 +37,9 @@ private:
 
     glm::mat4 projection_;
     glm::mat4 view_;
+
+    float yaw_;
+    float pitch_;
 };
 
 #endif

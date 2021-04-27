@@ -21,7 +21,9 @@ RenderManager::RenderManager(GLuint w, GLuint h)
     vertex_id(0),
     fragment_id(0),
     program_id(0),
-    geom_id(0)
+    geom_id(0),
+    deltaTime_(0),
+    translationSpeed_(0.005)
 {
     const float near = 0.1f;
     const float far = 100.0f;
@@ -91,27 +93,32 @@ void RenderManager::draw()
         ps.draw();
 }
 
-void RenderManager::update()
+void RenderManager::update(float delta)
 {
-
+    deltaTime_ = delta;
 }
 
 void RenderManager::moveForward()
 {
-    camera_->moveForward( 0.001f );
+    camera_->moveForward( translationSpeed_ * deltaTime_ );
 }
 
 void RenderManager::moveBackward()
 {
-    camera_->moveBackward( 0.001f );
+    camera_->moveBackward( translationSpeed_ * deltaTime_ );
 }
 
 void RenderManager::moveLeft()
 {
-    camera_->moveLeft( 0.001f );
+    camera_->moveLeft( translationSpeed_ * deltaTime_ );
 }
 
 void RenderManager::moveRight()
 {
-    camera_->moveRight( 0.001f );
+    camera_->moveRight( translationSpeed_ * deltaTime_ );
+}
+
+void RenderManager::rotate( float x, float y )
+{
+    camera_->rotate( x, y );
 }

@@ -52,7 +52,9 @@ WindowManager::WindowManager(int w, int h, RenderManager* rm, Graph* graph)
 : rm_(rm),
   graph_(graph),
   width_(w),
-  height_(h)
+  height_(h),
+  deltaTime_(0.0f),
+  lastFrame_(0.0f)
 {
     wm = this;
     memset(keys, 0, 256);
@@ -77,17 +79,35 @@ void WindowManager::draw()
 
 void WindowManager::update()
 {
-    if (keys[(unsigned char)'w'])
+    float currentFrame = static_cast<float>( glutGet(GLUT_ELAPSED_TIME) );
+    deltaTime_ = currentFrame - lastFrame_;
+    lastFrame_ = currentFrame;
+
+    rm_->update( deltaTime_ );
+
+    if (keys[ (unsigned char)'w'] )
         rm_->moveForward();
-    else if (keys[(unsigned char)'s'])
+    if (keys[(unsigned char)'s'])
         rm_->moveBackward();
-    else if (keys[(unsigned char)'a'])
+    if (keys[(unsigned char)'a'])
         rm_->moveLeft();
-    else if (keys[(unsigned char)'d'])
+    if (keys[(unsigned char)'d'])
         rm_->moveRight();
 
+    
+    if (keys[(unsigned char)'e'])
+    {
+        float xoffset = 0.05f;
+        float yoffset = 0.0f;
+        rm_->rotate(xoffset, yoffset);
+    }
+    if (keys[(unsigned char)'q'])
+    {
+        float xoffset = -0.05f;
+        float yoffset = 0.0f;
+        rm_->rotate(xoffset, yoffset);
+    }
 
-    rm_->update();
     graph_->update();
     
     glutPostRedisplay();   

@@ -38,6 +38,9 @@ private:
 
     bool keys[256];
     bool buttons[3];
+
+    float deltaTime_;
+    float lastFrame_;
 };
 
 #endif

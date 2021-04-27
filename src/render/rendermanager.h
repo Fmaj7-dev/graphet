@@ -19,7 +19,7 @@ public:
 
     void draw();
 
-    void update();
+    void update(float delta);
 
     void init();
 
@@ -29,6 +29,8 @@ public:
     void moveBackward();
     void moveLeft();
     void moveRight();
+
+    void rotate( float x, float y );
 
 
     ParticleSystem* addParticleSystem(size_t hint_nparticles);
@@ -53,6 +55,10 @@ private:
     render::ETuint fragment_id;
     render::ETuint program_id;
     render::ETuint geom_id;
+
+    float deltaTime_;
+
+    float translationSpeed_;
 };
 
 #endif
